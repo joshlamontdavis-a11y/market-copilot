@@ -1,6 +1,6 @@
 # Build log
 
-## 2026-10-16 — Phase 1: Skeleton
+## 2026-10-16: Phase 1, Skeleton
 
 What changed:
 - Recorded the kickoff interview answers in `SPEC.md`.

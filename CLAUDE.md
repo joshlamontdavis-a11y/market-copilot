@@ -109,6 +109,7 @@ On Windows the command may be `python`; elsewhere `python3`. The skill tries bot
 - Do not commit personal test runs from `market-briefs/`. Copy chosen runs into `samples/` or
   `tests/fixtures/` on purpose.
 - Update the checklist below as phases finish.
+- Never use em dashes in any file. Use commas, colons, or parentheses instead.
 
 ## Build phases
 
