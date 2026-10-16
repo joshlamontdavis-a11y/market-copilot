@@ -23,8 +23,7 @@ Files touched: `SPEC.md`, `BUILD_LOG.md`, `CLAUDE.md`, `.gitignore`, `requiremen
 
 My decisions and what I learned:
 
-I started out planning a web app that called the Claude API, but I didn’t want to pay for every brief, so I switched to a Claude Code plugin. That change made it free to run and turned it into something a teammate can actually install, which I think makes it more useful than a demo. The decision I’d defend first is keeping unverified sources visible in the brief but never letting them count as evidence in the market size math. Setup taught me more than I expected: half my problems were PATH and being in the wrong folder, so now I check where I am before I run anything.
-
+I switched from a web app to a Claude Code plugin because I didn’t want to pay for API calls every time someone ran a brief. Now it’s free to run, and anyone with Claude can install it, including future teammates. The decision I’d stand behind most is that unverified sources still show up, but they never count as evidence in the market size. Setup was honestly the hardest part. Most of my problems were PATH stuff and running commands in the wrong folder, so now I check where I am before I run anything.
 
 ## 2026-10-16: Phase 2, Sizing engine
 
@@ -46,4 +45,6 @@ What changed:
 Files touched: `copilot/sizing.py`, `tests/test_sizing.py`, `BUILD_LOG.md`, `CLAUDE.md`
 
 My decisions and what I learned:
+
+The most important thing the sizing code does is treat a missing number as an error instead of a zero. A zero would quietly give you a fake market size, and nobody would know. I had Claude write the tests before the code, so I got to see them fail and then pass, which showed me the tests were actually checking something. I also ran the base case on my calculator: 20,000 customers buying twice a year at $50 is $2,000,000, and it matched.
 
