@@ -35,9 +35,11 @@ class PageHandler(BaseHTTPRequestHandler):
     """Serves fixture pages. /slow waits 2 seconds; any unknown path is a 404."""
 
     last_user_agent = None
+    requested_paths = []  # every path asked for, so tests can count downloads
 
     def do_GET(self):
         PageHandler.last_user_agent = self.headers.get("User-Agent")
+        PageHandler.requested_paths.append(self.path)
         if self.path == "/slow":
             time.sleep(2)  # longer than the short timeout the test uses
             try:

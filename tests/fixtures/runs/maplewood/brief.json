@@ -1,0 +1,116 @@
+{
+  "idea": "Online booking and reminder texts for small dental clinics",
+  "research_date": "2026-10-16",
+  "depth": "quick",
+  "target_customer": "Office managers at dental clinics with one to five chairs",
+  "geography": "United States",
+  "currency": "USD",
+  "summary": {
+    "found": [
+      {
+        "text": "Clinic staff say missed appointments drop after switching to online booking.",
+        "status": "sourced",
+        "source_ids": ["S3"]
+      },
+      {
+        "text": "Most small clinics still book by phone and lose staff hours to missed appointments.",
+        "status": "sourced",
+        "source_ids": ["S6"]
+      },
+      {
+        "text": "Most clinics already use online booking software.",
+        "status": "sourced",
+        "source_ids": ["S5"]
+      }
+    ],
+    "unknowns": [
+      "Whether office managers or dentists choose the booking tool.",
+      "How many clinics are locked into contracts with their current software."
+    ]
+  },
+  "riskiest_assumptions": [
+    {
+      "assumption": "Missed appointments are a top-three problem for office managers.",
+      "why_risky": "The only evidence is a vendor testimonial.",
+      "how_to_test": "Ask five office managers to walk through their last no-show."
+    }
+  ],
+  "interview_script": {
+    "intro": "Thanks for talking with me. I'm learning how small clinics handle appointments.",
+    "questions": [
+      {
+        "question": "Tell me about the last time a patient missed an appointment.",
+        "listening_for": "What it cost them and what they did afterward."
+      },
+      {
+        "question": "How do you book appointments today?",
+        "listening_for": "Tools, workarounds, and who does the work."
+      },
+      {
+        "question": "Would you switch to a new booking tool if it cost $50 a month?",
+        "listening_for": "Price sensitivity."
+      },
+      {
+        "question": "What did you try the last time you wanted fewer no-shows?",
+        "listening_for": "Past spending and effort on the problem."
+      }
+    ]
+  },
+  "competitors": [
+    {
+      "name": "Maplewood Booking",
+      "url": "http://LOCAL_SERVER/pricing.html",
+      "description": {
+        "text": "Online booking started by two former clinic office managers.",
+        "status": "sourced",
+        "source_ids": ["S2"]
+      },
+      "price": {
+        "text": "$29 per month for one location.",
+        "status": "sourced",
+        "source_ids": ["S1"]
+      }
+    },
+    {
+      "name": "Birchline Scheduling",
+      "url": "http://LOCAL_SERVER/birchline.html",
+      "description": {
+        "text": "Scheduling and reminder texts for dental groups.",
+        "status": "sourced",
+        "source_ids": ["S999"]
+      },
+      "price": {
+        "text": "Not listed publicly. Guess about $50 per month.",
+        "status": "assumption",
+        "source_ids": []
+      }
+    }
+  ],
+  "market_size": {
+    "customers": {
+      "low": 10000, "base": 20000, "high": 40000,
+      "unit": "small dental clinics in the US",
+      "status": "sourced", "source_ids": ["S7"]
+    },
+    "price": {
+      "low": 29, "base": 50, "high": 79,
+      "unit": "US dollars per month",
+      "status": "sourced", "source_ids": ["S4"]
+    },
+    "purchases_per_year": {
+      "low": 12, "base": 12, "high": 12,
+      "unit": "months billed per year",
+      "status": "assumption", "source_ids": []
+    },
+    "sam_share": {
+      "low": 0.20, "base": 0.25, "high": 0.50,
+      "unit": "fraction of clinics without a booking tool they like",
+      "status": "assumption", "source_ids": []
+    },
+    "som_share": {
+      "low": 0.05, "base": 0.10, "high": 0.20,
+      "unit": "fraction of SAM we could win in 3 years",
+      "status": "assumption", "source_ids": []
+    }
+  }
+}

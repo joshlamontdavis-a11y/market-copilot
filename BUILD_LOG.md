@@ -89,3 +89,42 @@ Files touched: `copilot/sources.py`, `tests/conftest.py`, `tests/test_sources.py
 My decisions and what I learned:
 
 The source checker is what makes the whole tool honest. Claude can find a quote, but my code decides whether it’s actually on the page, and if even one word is off, it doesn’t count. What surprised me was how many ways a real quote can fail to match, like curly quotes, extra spaces, or invisible characters hidden inside words, so we handled those without loosening anything you can actually see. I also like that the tests can’t touch the internet at all, so a passing test means my code works, not that some website happened to be up.
+
+## 2026-10-16: Phase 4a, Brief schema, check.py, and brief.md
+
+What changed:
+- Added `skills/brief/brief_schema.md`: the formats of `ledger.json` (id, url, title, quote of
+  25 words or fewer, date accessed) and `brief.json` (summary, riskiest assumptions, interview
+  script, competitors, market size). Every factual statement is a "claim" with text, a status
+  of "sourced" or "assumption", and source ids. The brief never says "verified"; check.py does.
+  Its example JSON is checked by a test, so the doc can't drift from the code.
+- Rewrote `copilot/check.py` (`python check.py <run folder>`):
+  - Checks both files first. If anything is malformed, it lists every problem at once, writes
+    nothing, and exits 1.
+  - Checks every source, downloading each page once (a few at a time, for speed). The first
+    failing reason wins: quote over 25 words, page did not load, or quote not found on the page.
+  - Labels every claim Verified, Assumption, or Unverified. An Unverified claim lists one reason
+    per bad source id, including "missing id (not in the ledger)".
+  - Sizes the market with `sizing.py`, using `mark_unverified_as_assumptions` so a figure with an
+    unverified source is used in the math as an assumption. The report keeps both labels.
+  - Warns (does not fail) about interview questions that sound hypothetical ("would you",
+    "will you", "if we built", and similar), for Rule 4.
+  - Writes `check_report.json` and `brief.md`, and prints the counts, warnings, and file paths.
+- Added `copilot/render.py`: turns the brief and the report into `brief.md` in the SPEC.md order
+  (summary, riskiest assumptions, interview script, competitors, market size), then a sources
+  table. It shows the research date, a note that prices and competitors change, a line that the
+  brief does not show anyone will buy, a badge on every claim, and a "Rewrite" marker on any
+  flagged interview question.
+- Added a hand-made test run (`tests/fixtures/runs/maplewood/`) about a made-up company, plus a
+  made-up census page. It plants a fake id (S999), a quote with one changed word, a missing page,
+  and a 35-word quote. The test server now records requested paths so a test can prove each page
+  is downloaded only once.
+- Added 26 tests in `tests/test_check.py`. 63 tests pass.
+
+Files touched: `skills/brief/brief_schema.md`, `copilot/check.py`, `copilot/render.py`,
+`tests/conftest.py`, `tests/test_check.py`, `tests/fixtures/pages/census.html`,
+`tests/fixtures/runs/maplewood/brief.json`, `tests/fixtures/runs/maplewood/ledger.json`,
+`BUILD_LOG.md`
+
+My decisions and what I learned:
+

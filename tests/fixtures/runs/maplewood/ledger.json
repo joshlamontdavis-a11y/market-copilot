@@ -1,0 +1,51 @@
+[
+  {
+    "id": "S1",
+    "url": "http://LOCAL_SERVER/pricing.html",
+    "title": "Pricing | Maplewood Booking",
+    "quote": "Starter: $29 per month for one location",
+    "accessed": "2026-10-16"
+  },
+  {
+    "id": "S2",
+    "url": "http://LOCAL_SERVER/about.html",
+    "title": "About | Maplewood Booking",
+    "quote": "Maplewood Booking was started in 2024 by two former clinic office managers.",
+    "accessed": "2026-10-16"
+  },
+  {
+    "id": "S3",
+    "url": "http://LOCAL_SERVER/testimonials.html",
+    "title": "Customer stories | Maplewood Booking",
+    "quote": "We stopped losing appointments the week we switched",
+    "accessed": "2026-10-16"
+  },
+  {
+    "id": "S4",
+    "url": "http://LOCAL_SERVER/pricing.html",
+    "title": "Pricing | Maplewood Booking",
+    "quote": "Team: $89 per month for up to five locations",
+    "accessed": "2026-10-16"
+  },
+  {
+    "id": "S5",
+    "url": "http://LOCAL_SERVER/missing.html",
+    "title": "Clinic software survey",
+    "quote": "Most clinics now use online booking software.",
+    "accessed": "2026-10-16"
+  },
+  {
+    "id": "S6",
+    "url": "http://LOCAL_SERVER/census.html",
+    "title": "Clinic Census 2025 (made up)",
+    "quote": "Most of the small dental clinics in the census said that they still book appointments by phone, and many of them said that missed appointments cost them several hours of staff time every single week.",
+    "accessed": "2026-10-16"
+  },
+  {
+    "id": "S7",
+    "url": "http://LOCAL_SERVER/census.html",
+    "title": "Clinic Census 2025 (made up)",
+    "quote": "The made-up Clinic Census counted 20,000 small dental clinics in the United States in 2025.",
+    "accessed": "2026-10-16"
+  }
+]
