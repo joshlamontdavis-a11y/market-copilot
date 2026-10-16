@@ -134,3 +134,31 @@ Files touched: `skills/brief/brief_schema.md`, `copilot/check.py`, `copilot/rend
 My decisions and what I learned:
 
 This phase is where everything came together. My code now reads the whole brief, checks every source, and labels each claim itself, so Claude never gets to call its own work verified. My favorite part is that every Unverified item says exactly why, like a missing source or a page that didn’t load, so the reader knows what to go check. I made hypothetical interview questions a warning instead of an error, because a simple keyword check gets some questions wrong, and I didn’t want that stopping a brief in the middle of a demo.
+
+## 2026-10-16: Phase 4b, Brief skill
+
+What changed:
+- Replaced the stub `skills/brief/SKILL.md` with the full research workflow: privacy note,
+  `--deep` flag (deep: about 5-8 competitors and 15 sources; quick: about 3-5 and 10), the
+  Python check (`python`, then `python3`), clarifying questions only for a missing target
+  customer, geography, or price (one AskUserQuestion call, at most three questions), the run
+  folder `market-briefs/<date>-<short-name>/`, research with WebSearch and
+  `sources.py fetch`, writing `ledger.json` and `brief.json` per `brief_schema.md`, running
+  `check.py`, and a final message with counts, file paths, and an interview nudge.
+- If `check.py` lists problems with the files, the skill fixes them and runs it again (up to
+  three tries). It must never change a claim's status, its source ids, or a quote to improve
+  the counts. It may fix a quote only by reading the page again with `sources.py fetch`.
+- Until the Phase 5 viewer exists, the final message points to `brief.md`.
+- Added `allowed-tools` so a first-time user isn't flooded with permission prompts. It
+  pre-approves `check.py` and `sources.py fetch` (with `python` or `python3`), WebSearch,
+  WebFetch (fallback for sites that block the script), and writes under `market-briefs/`.
+  Per the skills docs, the grant lasts only for the turn that ran the skill, so questions go
+  through AskUserQuestion instead of a chat reply, and every command is written exactly as
+  its rule (no `cd`, `&&`, or `mkdir`).
+- Added two tests: every `${CLAUDE_PLUGIN_ROOT}` path a skill names exists, and the brief
+  skill's commands are pre-approved. 68 tests pass.
+
+Files touched: `skills/brief/SKILL.md`, `tests/test_skeleton.py`, `BUILD_LOG.md`
+
+My decisions and what I learned:
+

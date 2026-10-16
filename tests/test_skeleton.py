@@ -44,6 +44,26 @@ def test_every_skill_has_required_frontmatter():
         assert "argument-hint:" in frontmatter, skill_file
 
 
+def test_skill_scripts_exist():
+    # A renamed or moved file would break every brief run, so check each path a skill names.
+    pattern = re.compile(r"\$\{CLAUDE_PLUGIN_ROOT\}/([\w./-]+)")
+    for skill_file in (ROOT / "skills").glob("*/SKILL.md"):
+        for relative_path in pattern.findall(skill_file.read_text(encoding="utf-8")):
+            assert (ROOT / relative_path).is_file(), f"{skill_file} names missing {relative_path}"
+
+
+def test_brief_skill_commands_are_pre_approved():
+    # The skill runs each script with python or python3. Both must match an allowed-tools rule,
+    # or a first-time user gets a permission prompt for the plugin's own scripts.
+    text = (ROOT / "skills" / "brief" / "SKILL.md").read_text(encoding="utf-8")
+    for command in ('"${CLAUDE_PLUGIN_ROOT}/copilot/check.py" *',
+                    '"${CLAUDE_PLUGIN_ROOT}/copilot/sources.py" fetch *'):
+        for python in ("python", "python3"):
+            assert f"  - Bash({python} {command})" in text, f"no rule for {python} {command}"
+    for tool in ("WebSearch", "Edit(market-briefs/**)"):
+        assert f"  - {tool}\n" in text, f"{tool} is not pre-approved"
+
+
 def test_check_py_prints_version():
     from copilot import __version__
 
