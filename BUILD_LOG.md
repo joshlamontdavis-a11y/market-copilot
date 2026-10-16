@@ -88,3 +88,4 @@ Files touched: `copilot/sources.py`, `tests/conftest.py`, `tests/test_sources.py
 
 My decisions and what I learned:
 
+The source checker is what makes the whole tool honest. Claude can find a quote, but my code decides whether it’s actually on the page, and if even one word is off, it doesn’t count. What surprised me was how many ways a real quote can fail to match, like curly quotes, extra spaces, or invisible characters hidden inside words, so we handled those without loosening anything you can actually see. I also like that the tests can’t touch the internet at all, so a passing test means my code works, not that some website happened to be up.
