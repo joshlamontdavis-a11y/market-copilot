@@ -21,5 +21,5 @@ Files touched: `SPEC.md`, `BUILD_LOG.md`, `CLAUDE.md`, `.gitignore`, `requiremen
 `.claude-plugin/marketplace.json`, `skills/brief/SKILL.md`, `copilot/__init__.py`,
 `copilot/check.py`, `tests/test_skeleton.py`
 
-My decisions and what I learned:
+My decisions and what I learned:I started out planning a web app that called the Claude API, but I didn’t want to pay for every brief, so I switched to a Claude Code plugin. That change made it free to run and turned it into something a teammate can actually install, which I think makes it more useful than a demo. The decision I’d defend first is keeping unverified sources visible in the brief but never letting them count in the market size math. Setup taught me more than I expected: half my problems were PATH and being in the wrong folder, so now I check where I am before I run anything.
 
