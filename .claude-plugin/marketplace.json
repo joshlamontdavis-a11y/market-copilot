@@ -1,0 +1,14 @@
+{
+  "name": "market-copilot",
+  "description": "Market Analysis Copilot: sourced market briefs for founders, made with your own Claude plan.",
+  "owner": {
+    "name": "Josh Davis"
+  },
+  "plugins": [
+    {
+      "name": "market-copilot",
+      "source": "./",
+      "description": "Research a product idea's market and save a sourced brief that prepares you for customer interviews."
+    }
+  ]
+}

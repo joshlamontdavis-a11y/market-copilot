@@ -1,0 +1,16 @@
+# Personal brief runs (copy chosen runs into samples/ or tests/fixtures/ on purpose)
+market-briefs/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# Secrets (the project uses none, but never commit them by accident)
+.streamlit/secrets.toml
+.env
+
+# OS files
+.DS_Store
+Thumbs.db

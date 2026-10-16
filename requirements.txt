@@ -1,0 +1,2 @@
+# Only the optional viewer (app.py) needs this. Making briefs needs nothing.
+streamlit

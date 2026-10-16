@@ -1,0 +1,8 @@
+{
+  "name": "market-copilot",
+  "version": "0.1.0",
+  "description": "Research a product idea's market and save a sourced brief: customer segments, competitors with prices, a bottom-up market size, riskiest assumptions, and an interview script.",
+  "author": {
+    "name": "Josh Davis"
+  }
+}
