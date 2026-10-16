@@ -43,7 +43,8 @@ copilot/check.py                  entry point: validate brief, check sources, si
 copilot/sizing.py                 TAM, SAM, SOM from explicit assumptions (pure functions)
 copilot/render.py                 brief.json + check results -> brief.md
 app.py                            Streamlit viewer for saved briefs
-tests/                            pytest; fixtures are saved pages and runs, never the live web
+tests/                            pytest; fixtures are small hand-made HTML pages and saved runs,
+                                  never copies of real websites; tests never touch the live web
 samples/                          curated sample briefs for the public demo
 backtest/                         past Crocker products described generically
 SPEC.md                           Josh's kickoff interview answers (brief order, viewer, first run)
@@ -116,7 +117,7 @@ On Windows the command may be `python`; elsewhere `python3`. The skill tries bot
 - [x] 1. Skeleton: manifest, marketplace file, stub brief skill, copilot/ package, .gitignore,
         pytest runs, plugin validates
 - [x] 2. Sizing engine with tests
-- [ ] 3. Source checker with tests on saved pages, including a fake id and a wrong quote
+- [x] 3. Source checker with tests on saved pages, including a fake id and a wrong quote
 - [ ] 4. Brief skill, brief schema, check.py, brief.md; one real run saved as a test fixture
 - [ ] 5. Viewer with badges, editable assumptions, sources, Markdown export, and the view skill
 - [ ] 6. Backtest on three past Crocker products

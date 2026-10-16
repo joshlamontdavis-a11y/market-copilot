@@ -48,3 +48,43 @@ My decisions and what I learned:
 
 The most important thing the sizing code does is treat a missing number as an error instead of a zero. A zero would quietly give you a fake market size, and nobody would know. I had Claude write the tests before the code, so I got to see them fail and then pass, which showed me the tests were actually checking something. I also ran the base case on my calculator: 20,000 customers buying twice a year at $50 is $2,000,000, and it matched.
 
+## 2026-10-16: Phase 3, Source checker
+
+What changed:
+- Added `copilot/sources.py` (standard library only):
+  - `fetch_text(url)` downloads a page with a normal browser User-Agent and a 10-second
+    timeout and returns its readable text. Text inside `script`, `style`, `noscript`, and
+    `template` is skipped. Headings, paragraphs, and list items each get their own line, while
+    links and bold text join into the sentence around them.
+  - Only `http` and `https` links are read (urllib would otherwise open `file://` paths on the
+    user's computer). Downloads stop at about 5 MB.
+  - Any failure (HTTP error, timeout, nothing listening, not a web page) raises `FetchError`
+    with a plain-English reason starting "page did not load:", which check.py will show as the
+    Unverified reason in Phase 4.
+  - `quote_in_text(quote, text)` compares after normalizing both sides: curly quotes become
+    straight, invisible characters (zero-width spaces, soft hyphens, and similar) are removed,
+    case is ignored, and all whitespace collapses to single spaces. Nothing else is loosened.
+    An empty quote never matches.
+  - Command line: `python copilot/sources.py fetch <url>` prints the page text (exit 0) or the
+    reason it failed (exit 1). Output is UTF-8 so the Windows console doesn't crash on curly
+    quotes.
+- Added three small hand-made test pages about a made-up company in `tests/fixtures/pages/`.
+- Added `tests/conftest.py`: a local test server on 127.0.0.1 that serves those pages (plus a
+  404 and a slow page), and a guard on every test that fails any connection to anywhere other
+  than this computer, so tests can never touch the live web.
+- Added 16 tests in `tests/test_sources.py`: quote on the page, not on the page, one changed
+  word, split across link and bold tags, curly quotes and extra spaces both ways, invisible
+  characters, empty quote, scripts and styles excluded, entities decoded, User-Agent sent,
+  404, timeout, nothing listening, `file://` refused, the live-web guard, and the command line
+  for success and failure. 37 tests pass.
+- Tried the command on a real page (python.org/about): 218 lines of readable text, a real quote
+  was found, and a made-up quote was not.
+- Updated the `tests/` line in `CLAUDE.md`: fixtures are hand-made pages, never copies of real
+  websites.
+
+Files touched: `copilot/sources.py`, `tests/conftest.py`, `tests/test_sources.py`,
+`tests/fixtures/pages/pricing.html`, `tests/fixtures/pages/testimonials.html`,
+`tests/fixtures/pages/about.html`, `CLAUDE.md`, `BUILD_LOG.md`
+
+My decisions and what I learned:
+
