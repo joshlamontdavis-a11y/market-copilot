@@ -120,11 +120,17 @@ What changed:
   and a 35-word quote. The test server now records requested paths so a test can prove each page
   is downloaded only once.
 - Added 26 tests in `tests/test_check.py`. 63 tests pass.
+- Follow-up: `brief.md` now says near the top that Verified means the quoted text is on the
+  cited page, and the reader should judge whether the quote supports the claim. The Sources
+  table shows only the first 25 words of an over-limit quote, followed by "..."
+  (`check_report.json` keeps the whole quote). The 25-word limit now lives in `sources.py` so
+  `check.py` and `render.py` share it. 3 more tests; 66 tests pass.
 
 Files touched: `skills/brief/brief_schema.md`, `copilot/check.py`, `copilot/render.py`,
 `tests/conftest.py`, `tests/test_check.py`, `tests/fixtures/pages/census.html`,
-`tests/fixtures/runs/maplewood/brief.json`, `tests/fixtures/runs/maplewood/ledger.json`,
+`tests/fixtures/runs/maplewood/brief.json`, `tests/fixtures/runs/maplewood/ledger.json`, `copilot/sources.py`,
 `BUILD_LOG.md`
 
 My decisions and what I learned:
 
+This phase is where everything came together. My code now reads the whole brief, checks every source, and labels each claim itself, so Claude never gets to call its own work verified. My favorite part is that every Unverified item says exactly why, like a missing source or a page that didn’t load, so the reader knows what to go check. I made hypothetical interview questions a warning instead of an error, because a simple keyword check gets some questions wrong, and I didn’t want that stopping a brief in the middle of a demo.

@@ -28,6 +28,7 @@ BROWSER_USER_AGENT = (
 )
 TIMEOUT_SECONDS = 10
 MAX_BYTES = 5_000_000  # stop reading after about 5 MB so one huge file can't stall a run
+MAX_QUOTE_WORDS = 25  # SPEC.md: longer quotes are marked Unverified by check.py
 
 # Text inside these tags is never shown to a reader, so it is never part of the page text.
 SKIP_TAGS = {"script", "style", "noscript", "template"}

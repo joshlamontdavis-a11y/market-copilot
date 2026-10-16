@@ -48,9 +48,13 @@ if __name__ == "__main__" and not python_is_new_enough():
     sys.exit(1)
 
 from copilot import render, sizing  # noqa: E402  (imported after the version check on purpose)
-from copilot.sources import FetchError, fetch_text, quote_in_text  # noqa: E402
+from copilot.sources import (  # noqa: E402
+    MAX_QUOTE_WORDS,
+    FetchError,
+    fetch_text,
+    quote_in_text,
+)
 
-MAX_QUOTE_WORDS = 25  # SPEC.md: longer quotes are marked Unverified
 MAX_DOWNLOADS = 8  # pages downloaded at the same time
 STATUSES = ("sourced", "assumption")
 DEPTHS = ("quick", "deep")

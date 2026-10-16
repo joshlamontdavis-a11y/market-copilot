@@ -7,6 +7,8 @@ size, then the sources. Every claim carries the badge check.py decided ([Verifie
     render_brief(brief, report) -> the Markdown text (this module reads and writes no files)
 """
 
+from copilot.sources import MAX_QUOTE_WORDS
+
 # Market size rows in the order the math uses them, with readable names.
 SIZING_ROWS = (
     ("customers", "Customers"),
@@ -16,6 +18,11 @@ SIZING_ROWS = (
     ("som_share", "Share we could win in ~3 years (SOM)"),
 )
 REWRITE_MARK = "**[Rewrite: this asks about a hypothetical. Ask about the last time it happened.]**"
+# A Verified badge proves the words are on the page, not that they back up the claim.
+VERIFIED_MEANS = (
+    "Verified means the quoted text is on the cited page. "
+    "Read each quote to judge whether it supports the claim."
+)
 
 
 # --- Small formatting helpers ---------------------------------------------------------
@@ -57,6 +64,14 @@ def sizing_value(name, value, currency) -> str:
     return number(value)
 
 
+def short_quote(quote) -> str:
+    """The quote, or its first 25 words and "..." if it is over the limit."""
+    words = quote.split()
+    if len(words) <= MAX_QUOTE_WORDS:
+        return quote
+    return " ".join(words[:MAX_QUOTE_WORDS]) + "..."
+
+
 def cell(text) -> str:
     """Text that is safe inside a Markdown table cell."""
     return " ".join(str(text).split()).replace("|", "\\|")
@@ -76,6 +91,8 @@ def header(brief) -> list[str]:
         f"Depth: {brief['depth']}.",
         "",
         "This brief prepares you for customer interviews. It does not show that anyone will buy.",
+        "",
+        VERIFIED_MEANS,
         "",
     ]
 
@@ -181,7 +198,7 @@ def sources(report) -> list[str]:
     for sid, source in report["sources"].items():
         check = "Verified" if source["verified"] else f"Unverified: {source['reason']}"
         lines.append(
-            f"| {sid} | [{cell(source['title'])}]({source['url']}) | \"{cell(source['quote'])}\" "
+            f"| {sid} | [{cell(source['title'])}]({source['url']}) | \"{cell(short_quote(source['quote']))}\" "
             f"| {source['accessed']} | {cell(check)} |"
         )
     return lines + [""]

@@ -181,6 +181,36 @@ def test_brief_md_marks_the_hypothetical_question(checked):
     assert "1 interview question needs rewriting (see section 3)." in brief_md
 
 
+def test_brief_md_explains_what_verified_means_before_the_summary(checked):
+    _, brief_md = checked
+    line = ("Verified means the quoted text is on the cited page. "
+            "Read each quote to judge whether it supports the claim.")
+    assert line in brief_md
+    assert brief_md.index(line) < brief_md.index("## 1. Summary")
+
+
+def source_row(brief_md, sid):
+    return next(row for row in brief_md.splitlines() if row.startswith(f"| {sid} |"))
+
+
+def test_long_quote_shows_only_first_25_words(checked):
+    report, brief_md = checked
+    full_quote = report["sources"]["S6"]["quote"]
+    first_25 = " ".join(full_quote.split()[:25])  # ends "...said that missed appointments"
+    row = source_row(brief_md, "S6")
+    assert f'"{first_25}..."' in row
+    assert "cost them" not in row  # word 26 onward is left out
+    assert "quote is 35 words (limit is 25)" in row
+    # check_report.json still keeps the whole quote.
+    assert len(full_quote.split()) == 35
+
+
+def test_short_quotes_are_shown_in_full(checked):
+    _, brief_md = checked
+    assert '"Starter: $29 per month for one location" |' in source_row(brief_md, "S1")
+    assert "..." not in source_row(brief_md, "S7")
+
+
 def test_brief_md_has_no_em_dashes(checked):
     assert chr(0x2014) not in checked[1]  # the em dash character
 
