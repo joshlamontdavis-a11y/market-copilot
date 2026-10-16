@@ -115,7 +115,7 @@ On Windows the command may be `python`; elsewhere `python3`. The skill tries bot
 
 - [x] 1. Skeleton: manifest, marketplace file, stub brief skill, copilot/ package, .gitignore,
         pytest runs, plugin validates
-- [ ] 2. Sizing engine with tests
+- [x] 2. Sizing engine with tests
 - [ ] 3. Source checker with tests on saved pages, including a fake id and a wrong quote
 - [ ] 4. Brief skill, brief schema, check.py, brief.md; one real run saved as a test fixture
 - [ ] 5. Viewer with badges, editable assumptions, sources, Markdown export, and the view skill
