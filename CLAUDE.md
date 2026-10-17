@@ -35,8 +35,8 @@ IMPORTANT: these are enforced in code, not only in the skill's instructions.
 ```
 .claude-plugin/plugin.json        plugin manifest (name: market-copilot)
 .claude-plugin/marketplace.json   lets others install from this GitHub repo
-skills/brief/SKILL.md             /market-copilot:brief, the research workflow
-skills/brief/brief_schema.md      the brief.json format the skill must write
+skills/brief/SKILL.md             /market-copilot:brief, the research workflow and the
+                                  brief.json format (inline, so no file read is needed)
 skills/view/SKILL.md              /market-copilot:view, opens the viewer
 copilot/sources.py                fetch a page as plain text; look for a quote (stdlib only)
 copilot/check.py                  entry point: validate brief, check sources, size, render
@@ -65,7 +65,7 @@ interview script, competitors, market size.
    that text. If a site blocks the script, it may read the page with WebFetch, but that source
    will usually end up Unverified, and that is acceptable.
 3. It writes `ledger.json` (id S1, S2..., url, title, quote, date accessed) and `brief.json`
-   per `brief_schema.md`. Every factual field has `source_ids` and
+   per the Format section of `SKILL.md`. Every factual field has `source_ids` and
    `status: "sourced" | "assumption"`.
 4. It runs `python "${CLAUDE_PLUGIN_ROOT}/copilot/check.py" <run folder>`, which checks every
    source, computes sizing, and writes `check_report.json` and `brief.md`.

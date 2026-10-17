@@ -12,8 +12,16 @@
 - Quotes over 25 words are marked Unverified by check.py (enforced in code).
 
 ## Market size
-- Bottom-up: customers x price x purchases per year -> TAM; reachable share -> SAM;
-  winnable share in ~3 years -> SOM. Each step is a visible assumption.
+- Bottom-up: customers x units per customer x price x purchases per year -> TAM; reachable
+  share -> SAM; winnable share in ~3 years -> SOM. Each step is a visible assumption.
+  (units per customer added 2026-10-16 after the first real run, for products sold per bin,
+  seat, or location.)
+- Every sizing value is one number copied from one source quote, or one guess. The model never
+  works a value out from other numbers. A sourced value needs its base number in the cited
+  quote; a low or high not in the quote is shown as a guess.
+- The brief says what the price covers (for example, the monthly fee but not a one-time
+  hardware cost).
+- brief.md shows market sizes in whole dollars; check_report.json keeps the exact numbers.
 - Each assumption has low, base, and high values. Three scenarios: all low, all base, all high.
 
 ## Viewer

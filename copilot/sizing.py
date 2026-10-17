@@ -1,8 +1,12 @@
 """Bottom-up market sizing from explicit assumptions (Rule 3: the model never states a size).
 
-    TAM = customers x price x purchases_per_year
+    TAM = customers x units_per_customer x price x purchases_per_year
     SAM = TAM x sam_share     (share of customers who could buy)
     SOM = SAM x som_share     (share we could realistically win in about 3 years)
+
+units_per_customer is how many units one customer pays for (bins per dealership, seats per
+office). Each input is one number from a source or one guess, never a number the model worked
+out from other numbers, so this file does all of the multiplying (Rule 3).
 
 Each assumption has low, base, and high values, so there are three scenarios: all low,
 all base, and all high. Shares are fractions from 0 to 1 (0.25 means 25%).
@@ -18,7 +22,9 @@ Zero is a valid value. A missing value is always an error, never treated as zero
 
 from dataclasses import dataclass, replace
 
-ASSUMPTION_NAMES = ("customers", "sam_share", "som_share", "price", "purchases_per_year")
+ASSUMPTION_NAMES = (
+    "customers", "units_per_customer", "price", "purchases_per_year", "sam_share", "som_share",
+)
 SHARE_NAMES = ("sam_share", "som_share")
 SCENARIOS = ("low", "base", "high")
 STATUSES = ("sourced", "assumption")
@@ -91,7 +97,7 @@ def assumption_from_dict(name: str, data: dict) -> Assumption:
 
 
 def load_assumptions(data: dict) -> dict[str, Assumption]:
-    """Build all five assumptions. Lists every missing name at once so one fix is enough."""
+    """Build all six assumptions. Lists every missing name at once so one fix is enough."""
     missing = [name for name in ASSUMPTION_NAMES if name not in data]
     if missing:
         raise SizingError("Missing assumptions: " + ", ".join(missing))
@@ -120,7 +126,8 @@ def compute_scenario(scenario: str, assumptions: dict[str, Assumption]) -> Scena
     def value(name):
         return getattr(assumptions[name], scenario)
 
-    tam = value("customers") * value("price") * value("purchases_per_year")
+    tam = (value("customers") * value("units_per_customer") * value("price")
+           * value("purchases_per_year"))
     sam = tam * value("sam_share")
     som = sam * value("som_share")
     return Scenario(name=scenario, tam=tam, sam=sam, som=som)

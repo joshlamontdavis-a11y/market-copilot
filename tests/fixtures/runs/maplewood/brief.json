@@ -8,9 +8,14 @@
   "summary": {
     "found": [
       {
-        "text": "Clinic staff say missed appointments drop after switching to online booking.",
+        "text": "Clinic staff say missed appointments likely drop after switching to online booking.",
         "status": "sourced",
         "source_ids": ["S3"]
+      },
+      {
+        "text": "Clinics with many no-shows may be the easiest first customers.",
+        "status": "assumption",
+        "source_ids": []
       },
       {
         "text": "Most small clinics still book by phone and lose staff hours to missed appointments.",
@@ -87,10 +92,16 @@
     }
   ],
   "market_size": {
+    "price_covers": "The monthly subscription only. There is no one-time fee.",
     "customers": {
       "low": 10000, "base": 20000, "high": 40000,
       "unit": "small dental clinics in the US",
       "status": "sourced", "source_ids": ["S7"]
+    },
+    "units_per_customer": {
+      "low": 1, "base": 1, "high": 2,
+      "unit": "locations per clinic",
+      "status": "assumption", "source_ids": []
     },
     "price": {
       "low": 29, "base": 50, "high": 79,

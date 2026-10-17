@@ -2,12 +2,13 @@
 
 Every expected number can be checked by hand:
 
-            customers  price  buys/yr   TAM         sam_share  SAM         som_share  SOM
-    low     10,000     $40    1         $400,000    0.20       $80,000     0.05       $4,000
-    base    20,000     $50    2         $2,000,000  0.25       $500,000    0.10       $50,000
-    high    40,000     $60    3         $7,200,000  0.50       $3,600,000  0.20       $720,000
+            customers  units  price  buys/yr  TAM          sam_share  SAM          som_share  SOM
+    low     10,000     1      $40    1        $400,000     0.20       $80,000      0.05       $4,000
+    base    20,000     1      $50    2        $2,000,000   0.25       $500,000     0.10       $50,000
+    high    40,000     2      $60    3        $14,400,000  0.50       $7,200,000   0.20       $1,440,000
 
-TAM = customers x price x purchases_per_year, SAM = TAM x sam_share, SOM = SAM x som_share.
+TAM = customers x units_per_customer x price x purchases_per_year, SAM = TAM x sam_share,
+SOM = SAM x som_share.
 """
 
 import copy
@@ -29,6 +30,11 @@ def sample_data():
             "low": 10000, "base": 20000, "high": 40000,
             "unit": "small dental clinics in the US",
             "status": "sourced", "source_ids": ["S1"],
+        },
+        "units_per_customer": {
+            "low": 1, "base": 1, "high": 2,
+            "unit": "locations per clinic",
+            "status": "assumption", "source_ids": [],
         },
         "sam_share": {
             "low": 0.20, "base": 0.25, "high": 0.50,
@@ -62,7 +68,7 @@ def scenarios_by_name(data):
 
 def test_base_scenario_matches_hand_math():
     base = scenarios_by_name(sample_data())["base"]
-    # 20,000 x $50 x 2 = $2,000,000; x 0.25 = $500,000; x 0.10 = $50,000
+    # 20,000 x 1 x $50 x 2 = $2,000,000; x 0.25 = $500,000; x 0.10 = $50,000
     assert base.tam == pytest.approx(2_000_000)
     assert base.sam == pytest.approx(500_000)
     assert base.som == pytest.approx(50_000)
@@ -73,10 +79,10 @@ def test_low_and_high_scenarios_in_order():
     assert [s.name for s in scenarios] == ["low", "base", "high"]
 
     low, _, high = scenarios
-    # 10,000 x $40 x 1 = $400,000; x 0.20 = $80,000; x 0.05 = $4,000
+    # 10,000 x 1 x $40 x 1 = $400,000; x 0.20 = $80,000; x 0.05 = $4,000
     assert (low.tam, low.sam, low.som) == pytest.approx((400_000, 80_000, 4_000))
-    # 40,000 x $60 x 3 = $7,200,000; x 0.50 = $3,600,000; x 0.20 = $720,000
-    assert (high.tam, high.sam, high.som) == pytest.approx((7_200_000, 3_600_000, 720_000))
+    # 40,000 x 2 x $60 x 3 = $14,400,000; x 0.50 = $7,200,000; x 0.20 = $1,440,000
+    assert (high.tam, high.sam, high.som) == pytest.approx((14_400_000, 7_200_000, 1_440_000))
 
 
 def test_zero_customers_gives_zero_everywhere():

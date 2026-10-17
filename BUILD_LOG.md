@@ -162,3 +162,42 @@ Files touched: `skills/brief/SKILL.md`, `tests/test_skeleton.py`, `BUILD_LOG.md`
 
 My decisions and what I learned:
 
+
+## 2026-10-16: Phase 4c, Fixes from the first real run
+
+What changed:
+- Sourced claims say only what their quotes say. The skill now puts any conclusion in its own
+  assumption claim. `check.py` warns when a sourced claim uses a guessing word (may, might,
+  likely, unlikely, often, probably, possibly, perhaps), and brief.md marks it "Check". It is
+  a warning, not an error, like the hypothetical-question check.
+- Market size has a sixth input, `units_per_customer`:
+  TAM = customers x units per customer x price x purchases per year. Each sizing value must be
+  one number from one quote or one guess, never a number the model worked out. A new required
+  field, `market_size.price_covers`, says which part of a price (monthly or one-time) the
+  market size counts.
+- `check.py` now reads the numbers in a sourced sizing input's quotes. The base value must be
+  there, or the input is Unverified ("base value ... is not in the cited quotes", or "none of
+  its numbers appears in the cited quotes") and is used as an assumption in the math. A low or
+  high value that isn't in a quote is shown in brief.md as "(guess)". Shares only match numbers
+  written with % or "percent", so a 12% share can't match "12 months". Matching uses
+  `math.isclose` at its default tolerance.
+- brief.md shows TAM, SAM, and SOM in whole dollars. check_report.json keeps the exact numbers.
+- `check.py` warns about ledger sources that no claim cites, and brief.md marks them in the
+  Sources table. The skill removes those entries; it never adds a claim just to use a source.
+- `report["warnings"]` is now a dict with three lists: `hypothetical_questions`,
+  `guessing_words`, and `uncited_sources`.
+- Fixed the "read outside the working directories" prompt. The docs say `${CLAUDE_PLUGIN_ROOT}`
+  is filled in only inside Bash rules in `allowed-tools`, so a Read rule can't point at an
+  installed plugin's folder. The format from `brief_schema.md` now lives in a Format section
+  at the end of `SKILL.md`, which Claude Code loads with the skill, so there is no file to read
+  and no new permission. `brief_schema.md` is deleted.
+- Maplewood fixture: added `units_per_customer`, `price_covers`, a sourced claim with "likely",
+  an assumption claim, and an uncited source S8. New tests cover each change; 89 tests pass.
+
+Files touched: `copilot/check.py`, `copilot/render.py`, `copilot/sizing.py`,
+`skills/brief/SKILL.md`, `skills/brief/brief_schema.md` (deleted), `SPEC.md`, `CLAUDE.md`,
+`tests/test_check.py`, `tests/test_sizing.py`, `tests/fixtures/runs/maplewood/brief.json`,
+`tests/fixtures/runs/maplewood/ledger.json`, `BUILD_LOG.md`
+
+My decisions and what I learned:
+

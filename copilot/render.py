@@ -12,12 +12,14 @@ from copilot.sources import MAX_QUOTE_WORDS
 # Market size rows in the order the math uses them, with readable names.
 SIZING_ROWS = (
     ("customers", "Customers"),
+    ("units_per_customer", "Units per customer"),
     ("price", "Price per purchase"),
     ("purchases_per_year", "Purchases per year"),
     ("sam_share", "Share who could buy (SAM)"),
     ("som_share", "Share we could win in ~3 years (SOM)"),
 )
 REWRITE_MARK = "**[Rewrite: this asks about a hypothetical. Ask about the last time it happened.]**"
+GUESSING_MARK = "**[Check: guessing word in a sourced claim. Move the guess into an assumption.]**"
 # A Verified badge proves the words are on the page, not that they back up the claim.
 VERIFIED_MEANS = (
     "Verified means the quoted text is on the cited page. "
@@ -40,9 +42,15 @@ def cite(source_ids) -> str:
     return " (" + ", ".join(source_ids) + ")" if source_ids else ""
 
 
-def claim_text(claim, item) -> str:
-    """A claim with its badge and the source ids it cites."""
-    return f"{badge(item)} {claim['text']}{cite(claim['source_ids'])}"
+def claim_text(claim, item, flagged=False) -> str:
+    """A claim with its badge and the source ids it cites. flagged: it uses a guessing word."""
+    mark = " " + GUESSING_MARK if flagged else ""
+    return f"{badge(item)}{mark} {claim['text']}{cite(claim['source_ids'])}"
+
+
+def guessing_paths(report) -> set[str]:
+    """Where the sourced claims with a guessing word are."""
+    return {warning["path"] for warning in report["warnings"]["guessing_words"]}
 
 
 def number(value) -> str:
@@ -56,12 +64,25 @@ def money(value, currency) -> str:
     return "$" + number(value) if currency == "USD" else f"{number(value)} {currency}"
 
 
+def whole_money(value, currency) -> str:
+    """Market sizes in whole dollars: 395040.75 -> "$395,041". check_report.json keeps cents."""
+    amount = f"{value:,.0f}"
+    return "$" + amount if currency == "USD" else f"{amount} {currency}"
+
+
 def sizing_value(name, value, currency) -> str:
     if name in ("sam_share", "som_share"):
         return f"{value * 100:g}%"  # 0.25 -> "25%"
     if name == "price":
         return money(value, currency)
     return number(value)
+
+
+def guess_note(guessed) -> str:
+    """["low", "high"] -> "Low and high are guesses, not from the source."."""
+    names = " and ".join(guessed).capitalize()
+    verb = "is a guess" if len(guessed) == 1 else "are guesses"
+    return f"{names} {verb}, not from the source."
 
 
 def short_quote(quote) -> str:
@@ -106,13 +127,19 @@ def summary(brief, report) -> list[str]:
         f"assumptions, {counts['unverified']} unverified.",
         "",
     ]
-    flagged = len(report["warnings"])
+    flagged = len(report["warnings"]["hypothetical_questions"])
     if flagged:
         needs = "1 interview question needs" if flagged == 1 else f"{flagged} interview questions need"
         lines += [f"{needs} rewriting (see section 3).", ""]
+    guessing = guessing_paths(report)
+    if guessing:
+        uses = "1 sourced claim uses" if len(guessing) == 1 else f"{len(guessing)} sourced claims use"
+        lines += [f"{uses} a guessing word (marked Check). Read its quotes before relying on it.",
+                  ""]
     lines += ["### What we found", ""]
     for i, claim in enumerate(brief["summary"]["found"]):
-        lines.append(f"- {claim_text(claim, report['items'][f'summary.found.{i}'])}")
+        path = f"summary.found.{i}"
+        lines.append(f"- {claim_text(claim, report['items'][path], path in guessing)}")
     lines += ["", "### What we still don't know", ""]
     lines += [f"- {unknown}" for unknown in brief["summary"]["unknowns"]]
     return lines + [""]
@@ -130,7 +157,7 @@ def riskiest_assumptions(brief) -> list[str]:
 
 
 def interview_script(brief, report) -> list[str]:
-    flagged = {warning["path"] for warning in report["warnings"]}
+    flagged = {warning["path"] for warning in report["warnings"]["hypothetical_questions"]}
     script = brief["interview_script"]
     lines = ["## 3. Interview script", "", script["intro"], ""]
     for i, question in enumerate(script["questions"]):
@@ -143,17 +170,20 @@ def interview_script(brief, report) -> list[str]:
 
 
 def competitors(brief, report) -> list[str]:
+    guessing = guessing_paths(report)
     lines = ["## 4. Competitors", ""]
     for i, competitor in enumerate(brief["competitors"]):
-        description = report["items"][f"competitors.{i}.description"]
-        price = report["items"][f"competitors.{i}.price"]
+        parts = {}
+        for key in ("description", "price"):
+            path = f"competitors.{i}.{key}"
+            parts[key] = claim_text(competitor[key], report["items"][path], path in guessing)
         lines += [
             f"### {competitor['name']}",
             "",
             f"Link: {competitor['url']}",
             "",
-            f"- What it does: {claim_text(competitor['description'], description)}",
-            f"- Price: {claim_text(competitor['price'], price)}",
+            f"- What it does: {parts['description']}",
+            f"- Price: {parts['price']}",
             "",
         ]
     return lines
@@ -166,8 +196,8 @@ def market_size(brief, report) -> list[str]:
         "## 5. Market size",
         "",
         "Computed by sizing.py from the assumptions below, not stated by the model. "
-        "TAM = customers x price x purchases per year. SAM = TAM x share who could buy. "
-        "SOM = SAM x share we could win in about 3 years.",
+        "TAM = customers x units per customer x price x purchases per year. "
+        "SAM = TAM x share who could buy. SOM = SAM x share we could win in about 3 years.",
         "",
         "| Assumption | Low | Base | High | Unit | Check |",
         "|---|---|---|---|---|---|",
@@ -177,12 +207,18 @@ def market_size(brief, report) -> list[str]:
         label = badge(report["items"][f"market_size.{name}"]) + cite(a["source_ids"])
         if a["status"] != a["status_used"]:
             label += " Used as an assumption in the math."
-        values = [sizing_value(name, a[s], currency) for s in ("low", "base", "high")]
+        elif a["guessed_values"]:
+            label += " " + guess_note(a["guessed_values"])
+        values = []
+        for s in ("low", "base", "high"):
+            value = sizing_value(name, a[s], currency)
+            values.append(value + " (guess)" if s in a["guessed_values"] else value)
         lines.append(f"| {title} | " + " | ".join(values) + f" | {cell(a['unit'])} | {cell(label)} |")
 
+    lines += ["", f"Price covers: {sizing['price_covers']}"]
     lines += ["", "| Scenario | TAM | SAM | SOM |", "|---|---|---|---|"]
     for scenario in sizing["scenarios"]:
-        amounts = [money(scenario[key], currency) for key in ("tam", "sam", "som")]
+        amounts = [whole_money(scenario[key], currency) for key in ("tam", "sam", "som")]
         lines.append(f"| {scenario['name'].capitalize()} | " + " | ".join(amounts) + " |")
     return lines + ["", "Low uses every low value, base every base value, high every high value.",
                     ""]
@@ -195,8 +231,11 @@ def sources(report) -> list[str]:
         "| Id | Source | Quote | Accessed | Check |",
         "|---|---|---|---|---|",
     ]
+    uncited = {warning["id"] for warning in report["warnings"]["uncited_sources"]}
     for sid, source in report["sources"].items():
         check = "Verified" if source["verified"] else f"Unverified: {source['reason']}"
+        if sid in uncited:
+            check += ". Not cited by any claim."
         lines.append(
             f"| {sid} | [{cell(source['title'])}]({source['url']}) | \"{cell(short_quote(source['quote']))}\" "
             f"| {source['accessed']} | {cell(check)} |"

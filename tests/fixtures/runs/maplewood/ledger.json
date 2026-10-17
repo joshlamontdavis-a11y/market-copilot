@@ -47,5 +47,12 @@
     "title": "Clinic Census 2025 (made up)",
     "quote": "The made-up Clinic Census counted 20,000 small dental clinics in the United States in 2025.",
     "accessed": "2026-10-16"
+  },
+  {
+    "id": "S8",
+    "url": "http://LOCAL_SERVER/about.html",
+    "title": "About | Maplewood Booking",
+    "quote": "Our promise is simple: \"no contracts, cancel anytime.\"",
+    "accessed": "2026-10-16"
   }
 ]
