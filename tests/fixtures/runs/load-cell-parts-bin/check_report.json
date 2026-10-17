@@ -1,0 +1,344 @@
+{
+  "checked_on": "2026-10-16",
+  "research_date": "2026-10-16",
+  "counts": {
+    "verified": 13,
+    "assumption": 11,
+    "unverified": 0
+  },
+  "sources": {
+    "S1": {
+      "id": "S1",
+      "url": "https://www.nada.org/nadadata/",
+      "title": "NADA Data | NADA",
+      "quote": "The nation’s 16,991 franchised light-vehicle dealers sold 7.9 million light-duty vehicles.",
+      "accessed": "2026-10-16",
+      "verified": true,
+      "reason": null
+    },
+    "S2": {
+      "id": "S2",
+      "url": "https://www.nada.org/nadadata/",
+      "title": "NADA Data | NADA",
+      "quote": "Dealerships wrote more than 136 million repair orders, with service and parts sales of nearly $83 billion.",
+      "accessed": "2026-10-16",
+      "verified": true,
+      "reason": null
+    },
+    "S3": {
+      "id": "S3",
+      "url": "https://blueprint.fastenal.com/10-common-questions-about-fastbin.html",
+      "title": "10 Common Questions About FASTBin - THE BLUE PRINT",
+      "quote": "When the quantity falls below that item’s min level, a restock is triggered.",
+      "accessed": "2026-10-16",
+      "verified": true,
+      "reason": null
+    },
+    "S4": {
+      "id": "S4",
+      "url": "https://blueprint.fastenal.com/10-common-questions-about-fastbin.html",
+      "title": "10 Common Questions About FASTBin - THE BLUE PRINT",
+      "quote": "If an item is below min, the ping alerts your Fastenal branch to generate a restock.",
+      "accessed": "2026-10-16",
+      "verified": true,
+      "reason": null
+    },
+    "S5": {
+      "id": "S5",
+      "url": "https://supplypro.com/products/smartbin",
+      "title": "SmartBin - SupplyPro",
+      "quote": "Cabinet Storage System with weight-based sensing for",
+      "accessed": "2026-10-16",
+      "verified": true,
+      "reason": null
+    },
+    "S6": {
+      "id": "S6",
+      "url": "https://supplypro.com/products/smartbin",
+      "title": "SmartBin - SupplyPro",
+      "quote": "SmartBin comes standard with an RFID badge reader to identify employee access to cabinet.",
+      "accessed": "2026-10-16",
+      "verified": true,
+      "reason": null
+    },
+    "S7": {
+      "id": "S7",
+      "url": "https://eturns.com/products/features/sensorbins",
+      "title": "SensorBins: IoT Weight Sensors for Auto-Replenishment | eTurns",
+      "quote": "Weight sensors under bins of supplies work together with TrackStock IoT cloud software for fully automated replenishment.",
+      "accessed": "2026-10-16",
+      "verified": true,
+      "reason": null
+    },
+    "S8": {
+      "id": "S8",
+      "url": "https://www.eturns.com/solutions",
+      "title": "Choose Your TrackStock Demo | eTurns",
+      "quote": "If you'd like to do hands-free usage tracking with SensorBins then it costs around $96/item for the hardware.",
+      "accessed": "2026-10-16",
+      "verified": true,
+      "reason": null
+    },
+    "S9": {
+      "id": "S9",
+      "url": "https://eturns.com/products/features/sensorbins",
+      "title": "SensorBins: IoT Weight Sensors for Auto-Replenishment | eTurns",
+      "quote": "SensorBins are able to be used by customers of the Optimize Plan and are available at an additional hardware cost.",
+      "accessed": "2026-10-16",
+      "verified": true,
+      "reason": null
+    },
+    "S10": {
+      "id": "S10",
+      "url": "https://www.rurallifestyledealer.com/articles/5580",
+      "title": "Handling Special & Emergency Parts Orders: Part 1",
+      "quote": "Once the level reaches 6, your software will automatically let you know that it’s time to reorder.",
+      "accessed": "2026-10-16",
+      "verified": true,
+      "reason": null
+    },
+    "S11": {
+      "id": "S11",
+      "url": "https://www.rurallifestyledealer.com/articles/5580",
+      "title": "Handling Special & Emergency Parts Orders: Part 1",
+      "quote": "those who are not parts people — are generally the reason your counts are off.",
+      "accessed": "2026-10-16",
+      "verified": true,
+      "reason": null
+    },
+    "S12": {
+      "id": "S12",
+      "url": "https://fenderbender.com/55321446",
+      "title": "Würth USA Subscription Service Automates Frequent Orders | Fender Bender",
+      "quote": "Automotive shops and other businesses can automatically reorder frequently used products on a weekly or monthly schedule, ensuring essential supplies are always on hand.",
+      "accessed": "2026-10-16",
+      "verified": true,
+      "reason": null
+    },
+    "S13": {
+      "id": "S13",
+      "url": "https://fastenerandfixing.com/management-systems/smart-bins-in-small-part-warehouses",
+      "title": "Smart bins in small part warehouses | Fastener + Fixing Magazine",
+      "quote": "The sensor units also continuously measure the content weight of the container but are wireless and fully mobile.",
+      "accessed": "2026-10-16",
+      "verified": true,
+      "reason": null
+    }
+  },
+  "items": {
+    "summary.found.0": {
+      "label": "Finding",
+      "verdict": "verified",
+      "reasons": []
+    },
+    "summary.found.1": {
+      "label": "Finding",
+      "verdict": "verified",
+      "reasons": []
+    },
+    "summary.found.2": {
+      "label": "Finding",
+      "verdict": "verified",
+      "reasons": []
+    },
+    "summary.found.3": {
+      "label": "Finding",
+      "verdict": "verified",
+      "reasons": []
+    },
+    "summary.found.4": {
+      "label": "Finding",
+      "verdict": "verified",
+      "reasons": []
+    },
+    "summary.found.5": {
+      "label": "Finding",
+      "verdict": "verified",
+      "reasons": []
+    },
+    "summary.found.6": {
+      "label": "Finding",
+      "verdict": "assumption",
+      "reasons": []
+    },
+    "summary.found.7": {
+      "label": "Finding",
+      "verdict": "assumption",
+      "reasons": []
+    },
+    "competitors.0.description": {
+      "label": "Fastenal FASTBin (scale): description",
+      "verdict": "verified",
+      "reasons": []
+    },
+    "competitors.0.price": {
+      "label": "Fastenal FASTBin (scale): price",
+      "verdict": "assumption",
+      "reasons": []
+    },
+    "competitors.1.description": {
+      "label": "eTurns TrackStock SensorBins: description",
+      "verdict": "verified",
+      "reasons": []
+    },
+    "competitors.1.price": {
+      "label": "eTurns TrackStock SensorBins: price",
+      "verdict": "verified",
+      "reasons": []
+    },
+    "competitors.2.description": {
+      "label": "SupplyPro SmartBin: description",
+      "verdict": "verified",
+      "reasons": []
+    },
+    "competitors.2.price": {
+      "label": "SupplyPro SmartBin: price",
+      "verdict": "assumption",
+      "reasons": []
+    },
+    "competitors.3.description": {
+      "label": "TeDaLoS universal sensor: description",
+      "verdict": "verified",
+      "reasons": []
+    },
+    "competitors.3.price": {
+      "label": "TeDaLoS universal sensor: price",
+      "verdict": "assumption",
+      "reasons": []
+    },
+    "competitors.4.description": {
+      "label": "Status quo: DMS min/max plus supplier subscriptions: description",
+      "verdict": "verified",
+      "reasons": []
+    },
+    "competitors.4.price": {
+      "label": "Status quo: DMS min/max plus supplier subscriptions: price",
+      "verdict": "assumption",
+      "reasons": []
+    },
+    "market_size.customers": {
+      "label": "Market size: customers",
+      "verdict": "verified",
+      "reasons": []
+    },
+    "market_size.units_per_customer": {
+      "label": "Market size: units_per_customer",
+      "verdict": "assumption",
+      "reasons": []
+    },
+    "market_size.price": {
+      "label": "Market size: price",
+      "verdict": "assumption",
+      "reasons": []
+    },
+    "market_size.purchases_per_year": {
+      "label": "Market size: purchases_per_year",
+      "verdict": "assumption",
+      "reasons": []
+    },
+    "market_size.sam_share": {
+      "label": "Market size: sam_share",
+      "verdict": "assumption",
+      "reasons": []
+    },
+    "market_size.som_share": {
+      "label": "Market size: som_share",
+      "verdict": "assumption",
+      "reasons": []
+    }
+  },
+  "market_size": {
+    "price_covers": "The one-time hardware price per bin only. Any subscription or service fee is left out. purchases_per_year spreads that one-time price over the bin's replacement cycle.",
+    "assumptions": {
+      "customers": {
+        "low": 12000,
+        "base": 16991,
+        "high": 16991,
+        "unit": "franchised light-vehicle dealers in the US",
+        "status": "sourced",
+        "status_used": "sourced",
+        "source_ids": [
+          "S1"
+        ],
+        "guessed_values": [
+          "low"
+        ]
+      },
+      "units_per_customer": {
+        "low": 20,
+        "base": 50,
+        "high": 200,
+        "unit": "bins per dealership parts department",
+        "status": "assumption",
+        "status_used": "assumption",
+        "source_ids": [],
+        "guessed_values": []
+      },
+      "price": {
+        "low": 60,
+        "base": 80,
+        "high": 96,
+        "unit": "US dollars per bin, one-time",
+        "status": "assumption",
+        "status_used": "assumption",
+        "source_ids": [],
+        "guessed_values": []
+      },
+      "purchases_per_year": {
+        "low": 0.2,
+        "base": 0.25,
+        "high": 0.33,
+        "unit": "bin replacements per year (one every 3-5 years)",
+        "status": "assumption",
+        "status_used": "assumption",
+        "source_ids": [],
+        "guessed_values": []
+      },
+      "sam_share": {
+        "low": 0.2,
+        "base": 0.3,
+        "high": 0.5,
+        "unit": "fraction of dealerships that could buy",
+        "status": "assumption",
+        "status_used": "assumption",
+        "source_ids": [],
+        "guessed_values": []
+      },
+      "som_share": {
+        "low": 0.02,
+        "base": 0.05,
+        "high": 0.1,
+        "unit": "fraction of SAM we could win in 3 years",
+        "status": "assumption",
+        "status_used": "assumption",
+        "source_ids": [],
+        "guessed_values": []
+      }
+    },
+    "scenarios": [
+      {
+        "name": "low",
+        "tam": 2880000.0,
+        "sam": 576000.0,
+        "som": 11520.0
+      },
+      {
+        "name": "base",
+        "tam": 16991000.0,
+        "sam": 5097300.0,
+        "som": 254865.0
+      },
+      {
+        "name": "high",
+        "tam": 107654976.0,
+        "sam": 53827488.0,
+        "som": 5382748.800000001
+      }
+    ]
+  },
+  "warnings": {
+    "hypothetical_questions": [],
+    "guessing_words": [],
+    "uncited_sources": []
+  }
+}

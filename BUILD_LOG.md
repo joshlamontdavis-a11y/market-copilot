@@ -201,3 +201,26 @@ Files touched: `copilot/check.py`, `copilot/render.py`, `copilot/sizing.py`,
 
 My decisions and what I learned:
 
+
+## 2026-10-16: Phase 4d, A real run as a test fixture
+
+What changed:
+- Copied Josh's real run "A load-cell parts bin that weighs its contents and alerts when stock
+  runs low" into `tests/fixtures/runs/load-cell-parts-bin/`: `brief.json`, `ledger.json`, and
+  the `check_report.json` and `brief.md` that `check.py` wrote that day.
+- Added `page_excerpts.json` instead of copies of the 8 real pages: for each page, only the
+  sentence around each ledger quote, copied exactly from `sources.py fetch` output. Each
+  excerpt was checked to be an exact piece of the live page text.
+- New `tests/test_real_run.py` re-runs `check.py` on the run with the excerpts standing in for
+  the web. The new report must match the saved one (13 verified, 11 assumptions,
+  0 unverified), and `brief.md` must come out identical.
+- Quote S11 keeps the em dash from its source page, since changing it would break the match.
+  The em-dash tests now skip quotes copied from sources (a shared `assert_no_em_dashes`
+  fixture in `conftest.py`), and CLAUDE.md notes that exception.
+- Ticked Phase 4 in CLAUDE.md. 96 tests pass.
+
+Files touched: `tests/fixtures/runs/load-cell-parts-bin/` (5 files), `tests/test_real_run.py`,
+`tests/conftest.py`, `tests/test_check.py`, `CLAUDE.md`, `BUILD_LOG.md`
+
+My decisions and what I learned:
+

@@ -3,6 +3,7 @@
 - block_live_web runs for every test and fails any network connection that isn't to this
   computer (127.0.0.1), so an accidental real request fails loudly instead of quietly passing.
 - local_server serves the hand-made pages in tests/fixtures/pages/ from this computer.
+- assert_no_em_dashes checks brief.md for em dashes, skipping quotes copied from sources.
 """
 
 import socket
@@ -63,6 +64,23 @@ class PageHandler(BaseHTTPRequestHandler):
 
     def log_message(self, *args):
         pass  # keep test output quiet
+
+
+@pytest.fixture
+def assert_no_em_dashes():
+    """Check text has no em dashes, except inside quotes copied exactly from a source.
+
+    Our own writing never uses em dashes, but a quote must match its page character for
+    character, so a quote that has one keeps it.
+    """
+    from copilot.render import cell, short_quote
+
+    def check(text, ledger):
+        for entry in ledger:
+            text = text.replace(cell(short_quote(entry["quote"])), "")  # as brief.md shows it
+        assert chr(0x2014) not in text  # the em dash character
+
+    return check
 
 
 @pytest.fixture(scope="session")

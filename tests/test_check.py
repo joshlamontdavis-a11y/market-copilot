@@ -347,8 +347,9 @@ def test_short_quotes_are_shown_in_full(checked):
     assert "..." not in source_row(brief_md, "S7")
 
 
-def test_brief_md_has_no_em_dashes(checked):
-    assert chr(0x2014) not in checked[1]  # the em dash character
+def test_brief_md_has_no_em_dashes(checked, run_data, assert_no_em_dashes):
+    _, ledger = run_data
+    assert_no_em_dashes(checked[1], ledger)
 
 
 # --- Bad input: list every problem, write nothing -------------------------------------

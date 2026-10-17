@@ -44,7 +44,9 @@ copilot/sizing.py                 TAM, SAM, SOM from explicit assumptions (pure 
 copilot/render.py                 brief.json + check results -> brief.md
 app.py                            Streamlit viewer for saved briefs
 tests/                            pytest; fixtures are small hand-made HTML pages and saved runs,
-                                  never copies of real websites; tests never touch the live web
+                                  never copies of real websites (a saved real run keeps only
+                                  short excerpts around its quotes); tests never touch the
+                                  live web
 samples/                          curated sample briefs for the public demo
 backtest/                         past Crocker products described generically
 SPEC.md                           Josh's kickoff interview answers (brief order, viewer, first run)
@@ -110,7 +112,9 @@ On Windows the command may be `python`; elsewhere `python3`. The skill tries bot
 - Do not commit personal test runs from `market-briefs/`. Copy chosen runs into `samples/` or
   `tests/fixtures/` on purpose.
 - Update the checklist below as phases finish.
-- Never use em dashes in any file. Use commas, colons, or parentheses instead.
+- Never use em dashes in any file. Use commas, colons, or parentheses instead. The one
+  exception is text copied exactly from a source (ledger quotes and page excerpts), which
+  keeps its original characters so it still matches the page.
 
 ## Build phases
 
@@ -118,7 +122,7 @@ On Windows the command may be `python`; elsewhere `python3`. The skill tries bot
         pytest runs, plugin validates
 - [x] 2. Sizing engine with tests
 - [x] 3. Source checker with tests on saved pages, including a fake id and a wrong quote
-- [ ] 4. Brief skill, brief schema, check.py, brief.md; one real run saved as a test fixture
+- [x] 4. Brief skill, brief schema, check.py, brief.md; one real run saved as a test fixture
 - [ ] 5. Viewer with badges, editable assumptions, sources, Markdown export, and the view skill
 - [ ] 6. Backtest on three past Crocker products
 - [ ] 7. README with install steps, sample briefs, public viewer of samples, install test
