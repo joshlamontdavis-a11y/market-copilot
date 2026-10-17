@@ -162,6 +162,7 @@ Files touched: `skills/brief/SKILL.md`, `tests/test_skeleton.py`, `BUILD_LOG.md`
 
 My decisions and what I learned:
 
+This was the first time I ran the tool on a real idea instead of a made-up test. I picked dealership parts departments as the customer because those are people I can actually go talk to. The research found something I didn’t expect: the real competition isn’t other smart bins, it’s Chrysler’s automatic parts ordering and the distributor reps who already restock shop bins for free. I opened three of the sources myself and all three quotes were right there on the page. The rule I’d defend first is that the skill can’t change a claim’s status or a quote just to make the counts look better, because then the counts wouldn’t mean anything.
 
 ## 2026-10-16: Phase 4c, Fixes from the first real run
 
@@ -201,6 +202,7 @@ Files touched: `copilot/check.py`, `copilot/render.py`, `copilot/sizing.py`,
 
 My decisions and what I learned:
 
+Reading that first brief closely taught me that Verified doesn’t mean true. One line said distributors might be a better buyer and was marked Verified, but the quote only said Fastenal’s bins alert the local branch, so that conclusion came from Claude, not the source. The model also worked out a price row on its own and got the math wrong the first time before fixing it, which is exactly why my code does the math instead. Now check.py reads the numbers inside the quotes, and if the base number isn’t there, the input doesn’t count as sourced. I also added units per customer to the formula, since most IoT products sell more than one unit to each customer.
 
 ## 2026-10-16: Phase 4d, A real run as a test fixture
 
@@ -223,4 +225,6 @@ Files touched: `tests/fixtures/runs/load-cell-parts-bin/` (5 files), `tests/test
 `tests/conftest.py`, `tests/test_check.py`, `CLAUDE.md`, `BUILD_LOG.md`
 
 My decisions and what I learned:
+
+I ran the same idea again after the fixes, and this time it picked up a different angle: the dealer software already flags when to reorder, so the bin’s real job might be catching wrong counts. Neither run was wrong, which reminded me that the brief gets me ready for interviews, but the interviews are what actually answer the question. That second run is now a test that re-checks everything without going online, using only a sentence or so from each page instead of copying other companies’ websites into my repo. One quote had an em dash, which breaks my own style rule, but changing it would have made the quote stop matching the page. Copying sources exactly matters more than my formatting preferences, so the quote kept it.
 
