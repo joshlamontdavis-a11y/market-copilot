@@ -306,3 +306,4 @@ Files touched: `app.py`, `tests/test_app.py`, `skills/view/SKILL.md`, `BUILD_LOG
 
 My decisions and what I learned:
 
+The viewer is where the brief starts to feel like a real product, since you can change a number and watch the market size update. The decision I’d defend first is that an edited number can never show as Verified, because once you change it, it’s your guess and not the source’s. Claude Code also caught that Streamlit was open to anyone on my Wi-Fi and was pulling an icon from Google, so now the viewer only talks to my own computer. What I learned the most from was finding two bugs myself that 131 passing tests missed: Reset cleared the edit mark but left my number in the box, and the download could still have the old numbers. The tests were checking what the server thought, not what the browser actually showed, so passing tests aren’t the same as the thing working for a real person.
