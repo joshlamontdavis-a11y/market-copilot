@@ -4,8 +4,11 @@
   computer (127.0.0.1), so an accidental real request fails loudly instead of quietly passing.
 - local_server serves the hand-made pages in tests/fixtures/pages/ from this computer.
 - assert_no_em_dashes checks brief.md for em dashes, skipping quotes copied from sources.
+- briefs_folder is a folder of two checked runs for the viewer tests: the real run, and the
+  Maplewood run checked against local_server.
 """
 
+import shutil
 import socket
 import threading
 import time
@@ -16,6 +19,7 @@ from types import SimpleNamespace
 import pytest
 
 PAGES = Path(__file__).resolve().parent / "fixtures" / "pages"
+RUNS = Path(__file__).resolve().parent / "fixtures" / "runs"
 LOCAL_HOSTS = ("127.0.0.1", "::1")
 
 
@@ -92,3 +96,24 @@ def local_server():
     yield SimpleNamespace(url=f"http://127.0.0.1:{server.server_port}", handler=PageHandler)
     server.shutdown()
     server.server_close()
+
+
+@pytest.fixture
+def briefs_folder(local_server, tmp_path):
+    """A folder of briefs like market-briefs/, with both saved runs checked by check.py.
+
+    The real run already has its check_report.json. The Maplewood run has none, so it is copied
+    with its links pointed at local_server and checked here, without touching the live web.
+    """
+    from copilot.check import main
+
+    folder = tmp_path / "market-briefs"
+    shutil.copytree(RUNS / "load-cell-parts-bin", folder / "load-cell-parts-bin")
+    maplewood = folder / "maplewood"
+    maplewood.mkdir()
+    for name in ("brief.json", "ledger.json"):
+        text = (RUNS / "maplewood" / name).read_text(encoding="utf-8")
+        (maplewood / name).write_text(text.replace("http://LOCAL_SERVER", local_server.url),
+                                      encoding="utf-8")
+    assert main([str(maplewood)]) == 0
+    return folder

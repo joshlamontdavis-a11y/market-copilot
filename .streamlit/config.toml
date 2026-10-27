@@ -1,0 +1,18 @@
+# Used when the viewer is started from this folder (streamlit run app.py -- <folder>).
+# /market-copilot:view passes the same settings on the command line, since Streamlit only
+# reads this file from the folder it is started in.
+
+[browser]
+# Send no usage statistics to Streamlit.
+gatherUsageStats = false
+
+[server]
+# Don't ask for an email address on the first run, and don't open a browser by itself.
+headless = true
+# Only this computer can open the viewer. Setting this also stops Streamlit from looking up
+# the computer's public address online.
+address = "localhost"
+
+[client]
+# Hide Streamlit's Deploy button and developer menu; the viewer is a report, not an app to publish.
+toolbarMode = "minimal"

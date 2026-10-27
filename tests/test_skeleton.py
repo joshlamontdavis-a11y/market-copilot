@@ -64,6 +64,33 @@ def test_brief_skill_commands_are_pre_approved():
         assert f"  - {tool}\n" in text, f"{tool} is not pre-approved"
 
 
+def test_view_skill_commands_are_pre_approved():
+    text = (ROOT / "skills" / "view" / "SKILL.md").read_text(encoding="utf-8")
+    for command in ('"${CLAUDE_PLUGIN_ROOT}/copilot/check.py" --version',
+                    "-m streamlit version",
+                    '-m streamlit run "${CLAUDE_PLUGIN_ROOT}/app.py" *'):
+        for python in ("python", "python3"):
+            assert f"  - Bash({python} {command})" in text, f"no rule for {python} {command}"
+
+
+def test_viewer_sends_nothing_and_never_waits_for_input():
+    # The skill's command turns off usage statistics, the first-run email prompt, and the
+    # public address lookup, and keeps the viewer on this computer.
+    text = (ROOT / "skills" / "view" / "SKILL.md").read_text(encoding="utf-8")
+    start = next(line for line in text.splitlines() if line.startswith("python -m streamlit run"))
+    assert "--server.headless=true" in start
+    assert "--server.address=localhost" in start
+    assert "--browser.gatherUsageStats=false" in start
+    assert "run_in_background: true" in text
+    # So does the config file used when the viewer is started from the repo.
+    import tomllib
+
+    config = tomllib.loads((ROOT / ".streamlit" / "config.toml").read_text(encoding="utf-8"))
+    assert config["browser"]["gatherUsageStats"] is False
+    assert config["server"]["headless"] is True
+    assert config["server"]["address"] == "localhost"
+
+
 def test_check_py_prints_version():
     from copilot import __version__
 

@@ -1,2 +1,3 @@
-# For running the tests.
+# For running the tests. The viewer tests run app.py with Streamlit's AppTest.
+-r requirements.txt
 pytest

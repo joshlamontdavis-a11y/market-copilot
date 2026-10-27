@@ -172,7 +172,8 @@ Finish with a short message:
 
 1. The counts from check.py's last output: verified, assumptions, unverified.
 2. The full paths of `brief.md`, `brief.json`, `ledger.json`, and `check_report.json`.
-3. "Open brief.md to read your brief. (A viewer with editable market-size numbers is coming.)"
+3. "Open brief.md to read your brief, or run /market-copilot:view to open it in the viewer,
+   where you can change the market-size numbers."
 4. A reminder that prices and competitors change, so the brief is a snapshot from today, and
    that it does not show anyone will buy.
 5. A nudge: "Next step: pick three people who match your target customer and interview them

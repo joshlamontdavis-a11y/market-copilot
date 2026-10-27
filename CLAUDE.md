@@ -42,7 +42,9 @@ copilot/sources.py                fetch a page as plain text; look for a quote (
 copilot/check.py                  entry point: validate brief, check sources, size, render
 copilot/sizing.py                 TAM, SAM, SOM from explicit assumptions (pure functions)
 copilot/render.py                 brief.json + check results -> brief.md
-app.py                            Streamlit viewer for saved briefs
+copilot/viewer.py                 the viewer's logic: load runs, badges, edits (no Streamlit)
+app.py                            Streamlit viewer for saved briefs (layout only)
+.streamlit/config.toml            viewer settings: no usage stats, localhost only, no prompt
 tests/                            pytest; fixtures are small hand-made HTML pages and saved runs,
                                   never copies of real websites (a saved real run keeps only
                                   short excerpts around its quotes); tests never touch the
@@ -51,7 +53,7 @@ samples/                          curated sample briefs for the public demo
 backtest/                         past Crocker products described generically
 SPEC.md                           Josh's kickoff interview answers (brief order, viewer, first run)
 BUILD_LOG.md                      one entry per phase
-requirements.txt                  viewer only (streamlit); requirements-dev.txt: pytest
+requirements.txt                  viewer only (streamlit); requirements-dev.txt: it + pytest
 pytest.ini                        test settings (tests/, repo root on the import path)
 ```
 
@@ -81,7 +83,8 @@ On Windows the command may be `python`; elsewhere `python3`. The skill tries bot
 - Python 3.11+. `copilot/` uses only the standard library (urllib, html.parser, json,
   dataclasses, pathlib) so users install nothing to make briefs. Send a normal browser
   User-Agent header when fetching pages.
-- Viewer: Streamlit, listed in `requirements.txt`. Dev only: pytest.
+- Viewer: Streamlit, listed in `requirements.txt`. Dev: pytest, plus Streamlit for the AppTest
+  tests of app.py. Streamlit stays out of `copilot/`.
 - Skills: `disable-model-invocation: true` on both (the user triggers them), an `argument-hint`,
   and bundled files referenced with `${CLAUDE_PLUGIN_ROOT}`.
 - Josh develops on Windows. Use pathlib; no shell-specific tricks in scripts.
@@ -123,7 +126,7 @@ On Windows the command may be `python`; elsewhere `python3`. The skill tries bot
 - [x] 2. Sizing engine with tests
 - [x] 3. Source checker with tests on saved pages, including a fake id and a wrong quote
 - [x] 4. Brief skill, brief schema, check.py, brief.md; one real run saved as a test fixture
-- [ ] 5. Viewer with badges, editable assumptions, sources, Markdown export, and the view skill
+- [x] 5. Viewer with badges, editable assumptions, sources, Markdown export, and the view skill
 - [ ] 6. Backtest on three past Crocker products
 - [ ] 7. README with install steps, sample briefs, public viewer of samples, install test
         from GitHub

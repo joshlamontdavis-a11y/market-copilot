@@ -2,7 +2,9 @@
 
 Sections follow SPEC.md: summary, riskiest assumptions, interview script, competitors, market
 size, then the sources. Every claim carries the badge check.py decided ([Verified],
-[Assumption], or [Unverified: reason]); nothing here decides what is verified.
+[Assumption], or [Unverified: reason]); nothing here decides what is verified. The viewer's
+Markdown download uses this module too, and a base value the user changed there shows as
+[Your edit: base was ...] (see copilot/viewer.py).
 
     render_brief(brief, report) -> the Markdown text (this module reads and writes no files)
 """
@@ -18,8 +20,21 @@ SIZING_ROWS = (
     ("sam_share", "Share who could buy (SAM)"),
     ("som_share", "Share we could win in ~3 years (SOM)"),
 )
-REWRITE_MARK = "**[Rewrite: this asks about a hypothetical. Ask about the last time it happened.]**"
-GUESSING_MARK = "**[Check: guessing word in a sourced claim. Move the guess into an assumption.]**"
+# Marks for the warnings check.py found. The viewer (app.py) shows the same words as badges.
+REWRITE_NOTE = "Rewrite: this asks about a hypothetical. Ask about the last time it happened."
+GUESSING_NOTE = "Check: guessing word in a sourced claim. Move the guess into an assumption."
+REWRITE_MARK = f"**[{REWRITE_NOTE}]**"
+GUESSING_MARK = f"**[{GUESSING_NOTE}]**"
+CHANGE_NOTE = "Prices and competitors change, so check the links before relying on them."
+INTERVIEWS_NOTE = (
+    "This brief prepares you for customer interviews. It does not show that anyone will buy."
+)
+SIZING_MATH = (
+    "Computed by sizing.py from the assumptions below, not stated by the model. "
+    "TAM = customers x units per customer x price x purchases per year. "
+    "SAM = TAM x share who could buy. SOM = SAM x share we could win in about 3 years."
+)
+SCENARIOS_NOTE = "Low uses every low value, base every base value, high every high value."
 # A Verified badge proves the words are on the page, not that they back up the claim.
 VERIFIED_MEANS = (
     "Verified means the quoted text is on the cited page. "
@@ -35,6 +50,8 @@ def badge(item) -> str:
         return "**[Verified]**"
     if item["verdict"] == "assumption":
         return "**[Assumption]**"
+    if item["verdict"] == "edited":  # a base value the user changed in the viewer
+        return "**[Your edit: " + "; ".join(item["reasons"]) + "]**"
     return "**[Unverified: " + "; ".join(item["reasons"]) + "]**"
 
 
@@ -85,6 +102,34 @@ def guess_note(guessed) -> str:
     return f"{names} {verb}, not from the source."
 
 
+def sizing_cells(name, assumption, currency) -> list[str]:
+    """Low, base, and high as the brief shows them, marked (guess) or (your edit)."""
+    cells = []
+    for s in ("low", "base", "high"):
+        value = sizing_value(name, assumption[s], currency)
+        if s in assumption["guessed_values"]:
+            value += " (guess)"
+        elif s == "base" and "edited_from" in assumption:
+            value += " (your edit)"
+        cells.append(value)
+    return cells
+
+
+def sizing_note(assumption) -> str:
+    """The extra words after a market-size row's badge, or "" if there are none."""
+    if assumption["status"] != assumption["status_used"]:
+        return "Used as an assumption in the math."
+    if assumption["guessed_values"]:
+        return guess_note(assumption["guessed_values"])
+    return ""
+
+
+def edited_note(count) -> str:
+    """The summary line about values the user changed in the viewer."""
+    values = "1 market-size value was" if count == 1 else f"{count} market-size values were"
+    return f"{values} changed in the viewer (marked Your edit). check.py did not check them."
+
+
 def short_quote(quote) -> str:
     """The quote, or its first 25 words and "..." if it is over the limit."""
     words = quote.split()
@@ -105,13 +150,12 @@ def header(brief) -> list[str]:
     return [
         f"# Market brief: {brief['idea']}",
         "",
-        f"Research date: {brief['research_date']}. Prices and competitors change, so check the "
-        "links before relying on them.",
+        f"Research date: {brief['research_date']}. {CHANGE_NOTE}",
         "",
         f"Target customer: {brief['target_customer']}. Geography: {brief['geography']}. "
         f"Depth: {brief['depth']}.",
         "",
-        "This brief prepares you for customer interviews. It does not show that anyone will buy.",
+        INTERVIEWS_NOTE,
         "",
         VERIFIED_MEANS,
         "",
@@ -127,6 +171,8 @@ def summary(brief, report) -> list[str]:
         f"assumptions, {counts['unverified']} unverified.",
         "",
     ]
+    if counts.get("edited"):
+        lines += [edited_note(counts["edited"]), ""]
     flagged = len(report["warnings"]["hypothetical_questions"])
     if flagged:
         needs = "1 interview question needs" if flagged == 1 else f"{flagged} interview questions need"
@@ -195,9 +241,7 @@ def market_size(brief, report) -> list[str]:
     lines = [
         "## 5. Market size",
         "",
-        "Computed by sizing.py from the assumptions below, not stated by the model. "
-        "TAM = customers x units per customer x price x purchases per year. "
-        "SAM = TAM x share who could buy. SOM = SAM x share we could win in about 3 years.",
+        SIZING_MATH,
         "",
         "| Assumption | Low | Base | High | Unit | Check |",
         "|---|---|---|---|---|---|",
@@ -205,23 +249,20 @@ def market_size(brief, report) -> list[str]:
     for name, title in SIZING_ROWS:
         a = sizing["assumptions"][name]
         label = badge(report["items"][f"market_size.{name}"]) + cite(a["source_ids"])
-        if a["status"] != a["status_used"]:
-            label += " Used as an assumption in the math."
-        elif a["guessed_values"]:
-            label += " " + guess_note(a["guessed_values"])
-        values = []
-        for s in ("low", "base", "high"):
-            value = sizing_value(name, a[s], currency)
-            values.append(value + " (guess)" if s in a["guessed_values"] else value)
+        if sizing_note(a):
+            label += " " + sizing_note(a)
+        values = sizing_cells(name, a, currency)
         lines.append(f"| {title} | " + " | ".join(values) + f" | {cell(a['unit'])} | {cell(label)} |")
 
+    if any("edited_from" in a for a in sizing["assumptions"].values()):
+        lines += ["", "Values marked (your edit) were changed in the viewer, so these sizes "
+                  "differ from check_report.json."]
     lines += ["", f"Price covers: {sizing['price_covers']}"]
     lines += ["", "| Scenario | TAM | SAM | SOM |", "|---|---|---|---|"]
     for scenario in sizing["scenarios"]:
         amounts = [whole_money(scenario[key], currency) for key in ("tam", "sam", "som")]
         lines.append(f"| {scenario['name'].capitalize()} | " + " | ".join(amounts) + " |")
-    return lines + ["", "Low uses every low value, base every base value, high every high value.",
-                    ""]
+    return lines + ["", SCENARIOS_NOTE, ""]
 
 
 def sources(report) -> list[str]:

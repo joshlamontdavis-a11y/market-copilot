@@ -228,3 +228,54 @@ My decisions and what I learned:
 
 I ran the same idea again after the fixes, and this time it picked up a different angle: the dealer software already flags when to reorder, so the bin’s real job might be catching wrong counts. Neither run was wrong, which reminded me that the brief gets me ready for interviews, but the interviews are what actually answer the question. That second run is now a test that re-checks everything without going online, using only a sentence or so from each page instead of copying other companies’ websites into my repo. One quote had an em dash, which breaks my own style rule, but changing it would have made the quote stop matching the page. Copying sources exactly matters more than my formatting preferences, so the quote kept it.
 
+## 2026-10-26: Phase 5, Viewer and /market-copilot:view
+
+What changed:
+- New `app.py`, a Streamlit viewer. The sidebar lists the run folders in a folder of briefs
+  (newest first). The main pane follows brief.md: summary, riskiest assumptions, interview
+  script, competitors, market size, sources. Badges come from check_report.json: green
+  Verified, gray Assumption, red Unverified with the reason. It shows the "Verified means"
+  line, Check marks for guessing words, Rewrite marks for hypothetical questions, (guess)
+  values, the units per customer row, the Price covers line, uncited sources, and each quote
+  in an expandable box.
+- The sidebar has a number input for each market-size base value. A change recomputes TAM,
+  SAM, and SOM through sizing.py, in whole dollars. A changed value gets a blue "Your edit"
+  badge (with the old value), is used as an assumption in the math, and is never shown as
+  Verified; the counts change to match. "Reset to saved values" undoes edits. Edits last until
+  the page is refreshed or another brief is picked; the viewer never writes to a run folder.
+- "Download as Markdown" uses render.py, so with no edits it is the same text as brief.md. With
+  edits, the new numbers are marked "(your edit)" and "[Your edit: base was ...]", and the
+  summary says how many values were changed and that check.py did not check them.
+- New `copilot/viewer.py` holds the logic (finding runs, loading them, badges, Markdown
+  escaping, edits and recomputing), so app.py is mostly layout and Streamlit stays out of
+  copilot/. A run without check_report.json, or with a report that no longer matches
+  brief.json or ledger.json, shows a message to run check.py instead of claims without badges.
+- render.py: shared text constants and two small helpers (`sizing_cells`, `sizing_note`) so the
+  viewer and brief.md say the same things, plus the "Your edit" badge. brief.md output for an
+  unedited run is unchanged (the real-run test still matches byte for byte).
+- New `skills/view/SKILL.md`. It checks Python, checks Streamlit (and tells the user the
+  install command instead of installing it), then starts Streamlit in the background with
+  `--server.headless=true` (no first-run email prompt, no browser popup),
+  `--server.address=localhost` (only this computer can open it, and no public address
+  lookup), `--browser.gatherUsageStats=false`, and `--client.toolbarMode=minimal` (no Deploy
+  button). It tells the user the URL and that /tasks stops it. Its commands are pre-approved.
+  `.streamlit/config.toml` has the same settings for running from the repo.
+- The first live run printed an "External URL", which meant Streamlit had looked up the
+  computer's public address online, and it listened on the whole network. Setting
+  server.address fixed both. The browser also fetched the page icon from Google's font
+  server, so the page uses Streamlit's own icon instead. After both fixes, every request the
+  browser made went to localhost.
+- The brief skill's last message now says to run /market-copilot:view.
+- requirements.txt: `streamlit>=1.66`. requirements-dev.txt includes it, for the AppTest tests.
+- Tests: `tests/test_viewer.py` (logic, both saved runs, hand-computed edits),
+  `tests/test_app.py` (app.py run with Streamlit's AppTest), and skill checks in
+  `tests/test_skeleton.py`. A shared `briefs_folder` fixture checks the Maplewood run against
+  the local test server. 131 tests pass.
+
+Files touched: `app.py`, `copilot/viewer.py`, `copilot/render.py`, `skills/view/SKILL.md`,
+`skills/brief/SKILL.md`, `.streamlit/config.toml`, `requirements.txt`, `requirements-dev.txt`,
+`tests/test_viewer.py`, `tests/test_app.py`, `tests/test_skeleton.py`, `tests/conftest.py`,
+`CLAUDE.md`, `BUILD_LOG.md`
+
+My decisions and what I learned:
+
