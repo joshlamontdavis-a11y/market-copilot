@@ -307,3 +307,32 @@ Files touched: `app.py`, `tests/test_app.py`, `skills/view/SKILL.md`, `BUILD_LOG
 My decisions and what I learned:
 
 The viewer is where the brief starts to feel like a real product, since you can change a number and watch the market size update. The decision I’d defend first is that an edited number can never show as Verified, because once you change it, it’s your guess and not the source’s. Claude Code also caught that Streamlit was open to anyone on my Wi-Fi and was pulling an icon from Google, so now the viewer only talks to my own computer. What I learned the most from was finding two bugs myself that 131 passing tests missed: Reset cleared the edit mark but left my number in the box, and the download could still have the old numbers. The tests were checking what the server thought, not what the browser actually showed, so passing tests aren’t the same as the thing working for a real person.
+
+## 2026-10-27: Phase 6a, Backtest cases and commands
+
+What changed:
+- New `backtest/README.md` with three past products described generically, with no company
+  names: an infant vital-signs sock for new parents, a smart sprinkler controller for
+  homeowners, and a beehive mite sensor for beekeepers. Each has its exact
+  `/market-copilot:brief` command, which names the target customer, the geography (United
+  States), and a price guess ($300, $200, and $150 per hive, one-time), so the brief has
+  nothing to ask. It also says how to run them in the second terminal and copy the run
+  folders into `backtest/runs/`.
+- Both backtest files say this is not a blind test: web search can find the real companies,
+  and each description matches a real product.
+- New `backtest/RESULTS.md` skeleton: one row per case for the top competitors, riskiest
+  assumptions, base market size from sizing.py, and check.py counts, plus a blank "What
+  actually happened" column for Josh. Rows say "run pending" until the runs are in (Phase 6b).
+- New `tests/test_backtest.py`: every run in `backtest/runs/` loads in the viewer with no
+  problems, and app.py opened on `backtest/runs` (the folder `/market-copilot:view
+  backtest/runs` passes) lists every run and shows each with no warning. The README must have
+  exactly three commands that ask nothing. No em dashes in either file. With no runs yet, the
+  run tests are skipped. A trial copy of a saved run passed, and an unchecked run failed as it
+  should; both copies were removed.
+- The view skill already takes a folder argument, so it needed no change.
+
+Files touched: `backtest/README.md`, `backtest/RESULTS.md`, `tests/test_backtest.py`,
+`BUILD_LOG.md`
+
+My decisions and what I learned:
+
