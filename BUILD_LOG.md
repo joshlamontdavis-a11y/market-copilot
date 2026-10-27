@@ -277,5 +277,32 @@ Files touched: `app.py`, `copilot/viewer.py`, `copilot/render.py`, `skills/view/
 `tests/test_viewer.py`, `tests/test_app.py`, `tests/test_skeleton.py`, `tests/conftest.py`,
 `CLAUDE.md`, `BUILD_LOG.md`
 
+Fix, 2026-10-27 (two bugs Josh found testing on his real briefs):
+- Reset to saved values removed the Your edit mark, but the sidebar box kept showing the
+  edited number. Cause: Reset deleted each box's value from the session. The server then
+  used the saved value, but the browser was never told, so it kept showing its own number.
+  Fix: each box now starts from a session value (no `value=` argument), and Reset sets that
+  value to the saved number, which makes Streamlit send it to the browser.
+- The download could have the saved numbers after a change. The page itself did update.
+  Cause: a download button's file is made when the page is drawn. Typing a number and then
+  clicking Download sends the new number when focus leaves the box, but the click downloads
+  the file the browser already has, before the page redraws. In the browser, a click 0 ms
+  after leaving the box got the old numbers. A first fix (making the file when clicked)
+  failed: 0 ms got the previous number, and clicks 20-100 ms after leaving the box
+  downloaded nothing, because the redraw dropped the request. Fix: two steps. "Prepare
+  Markdown download" is a normal button, and a normal button's click carries every box's
+  current value, so the run it starts has the new number. Only that run shows "Save
+  brief.md", and any later change hides it. In the browser, 8 of 8 clicks from 0 to 400 ms
+  gave the typed number, in the file and on the page.
+- Known limit: if a Save button from an earlier Prepare is still showing, and a number is
+  typed and Save clicked within about 0.1 s, the file has the numbers from that Prepare (what
+  the page showed then), not the new number. The redraw hides Save within about 0.3 s.
+  Streamlit can't change a download button's file once it is in the browser.
+- New AppTest tests fail on the old app.py and pass now: Reset puts the saved value back in
+  the box (checks the value sent to the browser), and a prepared download has the edited
+  numbers and "(your edit)". The download file name is now `<run folder>-brief.md`.
+
+Files touched: `app.py`, `tests/test_app.py`, `skills/view/SKILL.md`, `BUILD_LOG.md`
+
 My decisions and what I learned:
 

@@ -58,10 +58,11 @@ def pick_run(folder):
     return runs[name]
 
 
-def reset_inputs(keys):
-    # Deleting a widget's saved value makes it start again from the saved base value.
-    for key in keys:
-        st.session_state.pop(key, None)
+def reset_inputs(saved_values):
+    # Setting each box's value (not deleting it) makes Streamlit send the saved number to the
+    # browser. After a delete, the server forgot the edit but the box kept showing it.
+    for key, value in saved_values.items():
+        st.session_state[key] = value
 
 
 def sizing_inputs(run, report, currency) -> dict[str, float]:
@@ -72,15 +73,18 @@ def sizing_inputs(run, report, currency) -> dict[str, float]:
         "the page or pick another brief; saved files are never changed."
     )
     saved = report["market_size"]["assumptions"]
-    inputs, keys = {}, []
+    inputs, saved_values = {}, {}
     for name, title in render.SIZING_ROWS:
         a = saved[name]
         is_share = name in sizing.SHARE_NAMES
         key = f"{run.folder.name}:{name}"
-        keys.append(key)
+        saved_values[key] = viewer.to_input(name, a["base"])
+        # The box starts from the session's value (not a value= argument), so Reset can
+        # change it the same way.
+        if key not in st.session_state:
+            st.session_state[key] = saved_values[key]
         inputs[name] = st.sidebar.number_input(
             f"{SHARE_TITLES[name]} (base, %)" if is_share else f"{title} (base)",
-            value=viewer.to_input(name, a["base"]),
             min_value=0.0,
             max_value=100.0 if is_share else None,
             step=1.0,
@@ -98,7 +102,7 @@ def sizing_inputs(run, report, currency) -> dict[str, float]:
         if edited and viewer.out_of_range(a, value):
             st.sidebar.caption(":orange[Outside the low to high range.]")
     if viewer.find_edits(report, inputs):
-        st.sidebar.button("Reset to saved values", on_click=reset_inputs, args=(keys,))
+        st.sidebar.button("Reset to saved values", on_click=reset_inputs, args=(saved_values,))
     return inputs
 
 
@@ -231,6 +235,29 @@ def show_sources(report):
             st.markdown("> " + viewer.md(render.short_quote(source["quote"])))
 
 
+def show_download(brief, run, edits):
+    """Download in two steps, so the file always has the numbers on the page.
+
+    A download button's file is made when the page is drawn. Typing a number and clicking it
+    straight away downloaded the old numbers, because the click came before the page redrew.
+    A normal button's click carries every box's current value, so the run it starts has the
+    new numbers; only that run shows the Save button, and any change hides it again.
+    """
+    if not st.button("Prepare Markdown download", key="prepare_download"):
+        return
+    st.download_button(
+        "Save brief.md",
+        data=viewer.brief_markdown(brief, run.report, edits),  # render.py, so it matches brief.md
+        file_name=f"{run.folder.name}-brief.md",
+        mime="text/markdown",
+        on_click="ignore",  # saving doesn't redraw the page, so the button stays
+        type="primary",
+    )
+    note = "with your edits" if edits else "with the saved numbers"
+    st.caption(f"Made from the numbers on this page, {note}. Change a number and prepare it "
+               "again to include the change.")
+
+
 # --- The page -----------------------------------------------------------------------------
 
 
@@ -259,13 +286,7 @@ def main():
     report = viewer.apply_edits(brief, run.report, edits)
 
     show_header(brief)
-    st.download_button(
-        "Download as Markdown",
-        data=viewer.brief_markdown(brief, run.report, edits),  # matches brief.md
-        file_name="brief-edited.md" if edits else "brief.md",
-        mime="text/markdown",
-        on_click="ignore",
-    )
+    show_download(brief, run, edits)
     show_summary(brief, report)
     show_risks(brief)
     show_interview(brief, report)

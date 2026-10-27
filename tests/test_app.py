@@ -8,7 +8,8 @@ import sys
 from pathlib import Path
 
 import pytest
-from streamlit.testing.v1 import AppTest
+from streamlit.runtime.media_file_manager import MediaFileManager
+from streamlit.testing.v1 import AppTest, app_test
 
 APP = Path(__file__).resolve().parent.parent / "app.py"
 RUNS = Path(__file__).resolve().parent / "fixtures" / "runs"
@@ -38,6 +39,34 @@ def pick(app, name):
 def base_row(app) -> str:
     table = next(m.value for m in app.markdown if m.value.startswith("| Scenario |"))
     return next(line for line in table.splitlines() if line.startswith("| Base |"))
+
+
+@pytest.fixture
+def file_stores(monkeypatch):
+    """Every run's download file store, in order. AppTest makes a new one for each run."""
+    stores = []
+
+    class RecordedStore(MediaFileManager):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            stores.append(self)
+
+    monkeypatch.setattr(app_test, "MediaFileManager", RecordedStore)
+    return stores
+
+
+def downloaded_text(button, files) -> str:
+    """What the browser saves when this download button (Save brief.md) is clicked.
+
+    A button with fixed data points at a file made when the page was drawn. A button with
+    deferred data asks the server to make the file when it is clicked.
+    """
+    if button.proto.deferred_file_id:
+        url = files.execute_deferred(button.proto.deferred_file_id)
+    else:
+        url = button.proto.url
+    file_id = url.rsplit("/", 1)[1]
+    return files._storage.get_file(file_id).content.decode("utf-8")  # test-only peek
 
 
 def test_lists_runs_newest_first(monkeypatch, briefs_folder):
@@ -97,6 +126,56 @@ def test_editing_a_base_value_recomputes_and_marks_the_edit(monkeypatch, briefs_
     app.sidebar.button[0].click().run()
     assert base_row(app) == "| Base | \\$16,991,000 | \\$5,097,300 | \\$254,865 |"
     assert "Your edit" not in page_text(app)
+
+
+def test_reset_puts_the_saved_value_back_in_the_box(monkeypatch, briefs_folder):
+    app = open_app(monkeypatch, briefs_folder)
+    pick(app, "load-cell-parts-bin")
+    app.number_input(key="load-cell-parts-bin:customers").set_value(20000).run()
+    app.sidebar.button[0].click().run()
+
+    box = app.number_input(key="load-cell-parts-bin:customers")
+    assert box.value == 16991
+    # The browser keeps showing the number it already has unless the server sends a new one
+    # (set_value). Bug: Reset cleared the edit on the server, but the box still showed 20000.
+    assert box.proto.set_value
+    assert box.proto.value == 16991
+    assert "Your edit" not in page_text(app)
+    assert not app.sidebar.button  # no Reset button when nothing is edited
+
+
+def test_download_has_the_edited_numbers(monkeypatch, briefs_folder, file_stores):
+    app = open_app(monkeypatch, briefs_folder)
+    pick(app, "load-cell-parts-bin")
+    # Bug: a download button drawn before an edit kept the saved numbers, and a click that
+    # left the number box downloaded them before the page redrew. So no download button may
+    # be on the page until the user asks for one.
+    assert not app.get("download_button")
+
+    # Typing a number and clicking Prepare reach the server in one message (a button's click
+    # carries every box's value), so the file made in that run has the new number.
+    app.number_input(key="load-cell-parts-bin:customers").set_value(20000)
+    app.button(key="prepare_download").click().run()
+    text = downloaded_text(app.get("download_button")[0], file_stores[-1])
+    assert "Checked by check.py: 12 verified, 11 assumptions, 0 unverified." in text
+    assert "1 market-size value was changed in the viewer" in text
+    assert "| Customers | 12,000 (guess) | 20,000 (your edit) |" in text
+    assert "**[Your edit: base was 16,991]**" in text
+    assert "| Base | $20,000,000 | $6,000,000 | $300,000 |" in text
+    assert base_row(app) == "| Base | \$20,000,000 | \$6,000,000 | \$300,000 |"
+
+    # Any later change hides the Save button, so it can't hand out numbers that are gone.
+    app.number_input(key="load-cell-parts-bin:customers").set_value(21000).run()
+    assert not app.get("download_button")
+
+
+def test_download_without_edits_matches_brief_md(monkeypatch, briefs_folder, file_stores):
+    app = open_app(monkeypatch, briefs_folder)
+    pick(app, "load-cell-parts-bin")
+    app.button(key="prepare_download").click().run()
+    text = downloaded_text(app.get("download_button")[0], file_stores[-1])
+    saved = (briefs_folder / "load-cell-parts-bin" / "brief.md").read_text(encoding="utf-8")
+    assert text == saved
 
 
 def test_share_is_edited_as_a_percent(monkeypatch, briefs_folder):

@@ -91,7 +91,8 @@ the user:
    (It is usually http://localhost:8501; Streamlit picks the next port if that one is busy.)
 2. "Pick a brief in the sidebar. Change a base value under Market size inputs to recompute
    TAM, SAM, and SOM. Your changes are marked Your edit, last until you refresh the page, and
-   never change your saved files. Download as Markdown saves the brief with your numbers."
+   never change your saved files. To save the brief with your numbers, click Prepare Markdown
+   download, then Save brief.md."
 3. "To stop the viewer, run /tasks and stop it there. It also stops when you exit Claude
    Code."
 
