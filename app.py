@@ -1,6 +1,6 @@
 """Streamlit viewer for saved market briefs.
 
-    streamlit run app.py -- <folder of briefs>      (default folder: market-briefs)
+    streamlit run app.py -- <folder of briefs> ...  (default folder: market-briefs)
 
 This file is layout only. Loading runs, badges, and the market-size math live in
 copilot/viewer.py, which pytest tests. The page follows brief.md: summary, riskiest
@@ -48,10 +48,14 @@ def table_cell(text) -> str:
 # --- Sidebar ------------------------------------------------------------------------------
 
 
-def pick_run(folder):
-    """The run folder the user picked, or None if the folder has no briefs."""
+def pick_run(folders, note=None):
+    """The run folder the user picked, or None if the folders have no briefs."""
     st.sidebar.title("Market briefs")
-    runs = {path.name: path for path in viewer.find_runs(folder)}
+    if note:
+        st.sidebar.caption(note)
+    found = [path for folder in folders for path in viewer.find_runs(folder)]
+    # Newest first across all the folders (run folder names start with the date).
+    runs = {path.name: path for path in sorted(found, key=lambda path: path.name, reverse=True)}
     if not runs:
         return None
     name = st.sidebar.radio("Saved briefs", list(runs))
@@ -261,14 +265,15 @@ def show_download(brief, run, edits):
 # --- The page -----------------------------------------------------------------------------
 
 
-def main():
+def main(folders, note=None):
+    """The whole page for the briefs in these folders. note: a line shown under the title."""
     # No page_icon: a Material icon would make the browser download it from Google.
     st.set_page_config(page_title="Market Copilot")
-    folder = Path(sys.argv[1] if len(sys.argv) > 1 else DEFAULT_FOLDER)
-    run_folder = pick_run(folder)
+    run_folder = pick_run(folders, note)
     if run_folder is None:
+        names = ", ".join(str(Path(folder).resolve()) for folder in folders)
         st.title("Market briefs")
-        st.info(f"No saved briefs in {folder.resolve()}. Make one with "
+        st.info(f"No saved briefs in {names}. Make one with "
                 '/market-copilot:brief "<product idea>" in Claude Code.')
         return
 
@@ -295,4 +300,6 @@ def main():
     show_sources(report)
 
 
-main()
+# Streamlit runs this file as __main__. demo/streamlit_app.py imports it and calls main itself.
+if __name__ == "__main__":
+    main([Path(arg) for arg in sys.argv[1:]] or [Path(DEFAULT_FOLDER)])

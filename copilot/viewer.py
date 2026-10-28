@@ -21,6 +21,7 @@ from copilot import check, render, sizing
 REPORT_PARTS = ("counts", "sources", "items", "market_size", "warnings")
 # Characters Markdown (or Streamlit's LaTeX, for "$") would treat as formatting.
 MARKDOWN_SPECIALS = set("\\`*_[]<>#~|$")
+OUT_OF_RANGE = "outside the low to high range"
 
 
 # --- Loading saved runs -------------------------------------------------------------------
@@ -173,14 +174,16 @@ def apply_edits(brief, report, edits) -> dict:
     assumptions = report["market_size"]["assumptions"]
     for name, value in edits.items():
         saved = assumptions[name]
-        was = render.sizing_value(name, saved["base"], currency)
+        reasons = ["base was " + render.sizing_value(name, saved["base"], currency)]
+        if out_of_range(saved, value):  # said in the download too, not only in the sidebar
+            reasons.append(OUT_OF_RANGE)
         saved.update(
             edited_from=saved["base"],
             base=value,
             status_used="assumption",
             guessed_values=[s for s in saved["guessed_values"] if s != "base"],
         )
-        report["items"][f"market_size.{name}"].update(verdict="edited", reasons=[f"base was {was}"])
+        report["items"][f"market_size.{name}"].update(verdict="edited", reasons=reasons)
 
     counts = {"verified": 0, "assumption": 0, "unverified": 0, "edited": 0}
     for item in report["items"].values():

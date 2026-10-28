@@ -365,3 +365,44 @@ Files touched: `backtest/runs/` (3 run folders), `backtest/RESULTS.md`,
 
 My decisions and what I learned:
 The results were more interesting than I expected. The sock brief found the real company and flagged regulation as one of the big risks, including its 2021 sales halt. The sprinkler brief showed a $200 price would sit at the top of the category and that water utility rebates are a hidden competitor. The hive brief found no direct competitor at all. What stood out to me is that in all three, only the customer count actually came from a source, and the other five sizing numbers were guesses, so the market size is a starting point for interviews, not an answer. I also liked that a script copied the numbers into RESULTS.md and a test checks them, so nobody could fudge them, including me.
+
+## 2026-10-28: Phase 7, README, samples, and going public
+
+What changed:
+- Viewer polish. The Markdown download's edit note says "check.py did not check it" for one
+  edited value and "them" for more. An edited base value below the low or above the high now
+  says "outside the low to high range" in its Your edit badge, in the download and in the
+  viewer's table, not only in the sidebar.
+- `app.py` takes one or more folders (`streamlit run app.py -- samples backtest/runs`) and has a
+  `main(folders, note)` function, so the public demo can reuse it. The view skill's command
+  works as before.
+- `demo/streamlit_app.py` is the Streamlit Community Cloud entry point. It shows the samples
+  and the backtest runs. Its own `demo/.streamlit/config.toml` listens on every address,
+  because Cloud can't serve a page bound to localhost. The root `.streamlit/config.toml` and
+  the view skill are unchanged, so the local viewer stays localhost only, with usage stats off.
+- `samples/`: a copy of the load-cell run (the same files as its test fixture, and a test
+  keeps the two the same), plus `samples/README.md` linking all four samples. The three
+  backtest runs are linked in `backtest/runs/`, not copied again.
+- `README.md`: what the plugin does, the five rules in plain words, what you need, the privacy
+  note (brief command, local viewer, and public demo each described accurately), the install
+  commands, running a brief and the viewer, the samples, and the backtest with the not-blind
+  note. The MIT `LICENSE` is in Josh's name.
+- `plugin.json` gained `homepage`, `repository`, and `license`. Its description (and CLAUDE.md's
+  opening) no longer promise "customer segments", which briefs don't have; both now list the
+  brief's real sections in order. `.claude-plugin/icon.png` is a
+  512x512 icon drawn by a throwaway standard-library script. `claude plugin validate .` now
+  warns only about CLAUDE.md, as expected.
+- Privacy check of every tracked file and the full git history: every commit uses the GitHub
+  noreply address; no personal email, API keys, tokens, passwords, local paths, or personal
+  test runs.
+- New tests in `tests/test_samples.py` (the sample loads, it matches the fixture, the demo lists
+  all four briefs, the local config stays on localhost, README links point to real files), plus
+  new viewer tests for the range note and "it" or "them".
+
+Files touched: `app.py`, `copilot/render.py`, `copilot/viewer.py`, `demo/` (2 files),
+`samples/` (5 files), `README.md`, `LICENSE`, `docs/viewer.png`, `.claude-plugin/plugin.json`,
+`.claude-plugin/icon.png`, `tests/test_viewer.py`, `tests/test_app.py`, `tests/test_samples.py`,
+`CLAUDE.md`, `BUILD_LOG.md`
+
+My decisions and what I learned:
+

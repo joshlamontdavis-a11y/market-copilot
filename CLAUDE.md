@@ -1,9 +1,9 @@
 # Market Analysis Copilot (Claude Code plugin)
 
 A Claude Code plugin. A user types `/market-copilot:brief "<product idea>"` in Claude Code, and
-Claude Code researches the market with web search and saves a sourced market brief: customer
-segments, competitors with prices and links, a bottom-up market size, the riskiest assumptions,
-and a customer interview script. Everything runs on the user's own computer and Claude plan.
+Claude Code researches the market with web search and saves a sourced market brief: a summary,
+the riskiest assumptions, a customer interview script, competitors with prices and links, and a
+bottom-up market size. Everything runs on the user's own computer and Claude plan.
 There is no API key, no server, and no paid service.
 
 Owner: Josh Davis, BYU Marriott (Strategic Management). This is a portfolio project for the
@@ -49,8 +49,13 @@ tests/                            pytest; fixtures are small hand-made HTML page
                                   never copies of real websites (a saved real run keeps only
                                   short excerpts around its quotes); tests never touch the
                                   live web
-samples/                          curated sample briefs for the public demo
+samples/                          the load-cell sample brief and a README linking all four samples
+demo/streamlit_app.py             public demo of the samples (Streamlit Community Cloud entry;
+                                  its own .streamlit/config.toml, so the local viewer stays
+                                  localhost only)
+docs/viewer.png                   screenshot for the README
 backtest/                         past Crocker products described generically
+README.md, LICENSE                public README and MIT license
 SPEC.md                           Josh's kickoff interview answers (brief order, viewer, first run)
 BUILD_LOG.md                      one entry per phase
 requirements.txt                  viewer only (streamlit); requirements-dev.txt: it + pytest
@@ -128,5 +133,5 @@ On Windows the command may be `python`; elsewhere `python3`. The skill tries bot
 - [x] 4. Brief skill, brief schema, check.py, brief.md; one real run saved as a test fixture
 - [x] 5. Viewer with badges, editable assumptions, sources, Markdown export, and the view skill
 - [x] 6. Backtest on three past Crocker products
-- [ ] 7. README with install steps, sample briefs, public viewer of samples, install test
+- [x] 7. README with install steps, sample briefs, public viewer of samples, install test
         from GitHub

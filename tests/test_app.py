@@ -116,7 +116,7 @@ def test_editing_a_base_value_recomputes_and_marks_the_edit(monkeypatch, briefs_
     assert not app.exception
     assert base_row(app) == "| Base | \\$20,000,000 | \\$6,000,000 | \\$300,000 |"
     text = page_text(app)
-    assert ":blue-badge[Your edit] :blue[(base was 16,991)]" in text
+    assert ":blue-badge[Your edit] :blue[(base was 16,991; outside the low to high range)]" in text
     assert "20,000 (your edit)" in text
     assert ":green-badge[12 verified]" in text
     assert ":blue-badge[1 changed by you]" in text
@@ -160,9 +160,9 @@ def test_download_has_the_edited_numbers(monkeypatch, briefs_folder, file_stores
     assert "Checked by check.py: 12 verified, 11 assumptions, 0 unverified." in text
     assert "1 market-size value was changed in the viewer" in text
     assert "| Customers | 12,000 (guess) | 20,000 (your edit) |" in text
-    assert "**[Your edit: base was 16,991]**" in text
+    assert "**[Your edit: base was 16,991; outside the low to high range]**" in text
     assert "| Base | $20,000,000 | $6,000,000 | $300,000 |" in text
-    assert base_row(app) == "| Base | \$20,000,000 | \$6,000,000 | \$300,000 |"
+    assert base_row(app) == "| Base | \\$20,000,000 | \\$6,000,000 | \\$300,000 |"
 
     # Any later change hides the Save button, so it can't hand out numbers that are gone.
     app.number_input(key="load-cell-parts-bin:customers").set_value(21000).run()

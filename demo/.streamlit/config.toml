@@ -1,0 +1,19 @@
+# Settings for the public demo on Streamlit Community Cloud (demo/streamlit_app.py).
+# Community Cloud reads this file because it sits next to the demo's entrypoint, and its
+# values take precedence over the repo's .streamlit/config.toml. The local viewer
+# (streamlit run app.py, or /market-copilot:view) never reads this file, so it stays
+# localhost only.
+
+[server]
+# Listen on every address, so Cloud's servers can reach the page. The local config says
+# "localhost", which only works for a viewer on your own computer.
+address = "0.0.0.0"
+headless = true
+
+[client]
+# Hide Streamlit's developer menu, the same as the local viewer.
+toolbarMode = "minimal"
+
+# Usage statistics: Community Cloud turns these on for every app it hosts, whatever a config
+# file says. That is Streamlit's hosting, covered by Streamlit's terms; the brief command and
+# the local viewer send nothing.

@@ -189,7 +189,9 @@ def test_edited_value_is_never_verified(real_run):
     report = viewer.apply_edits(real_run.brief, real_run.report, {"customers": 20000})
     item = report["items"]["market_size.customers"]
     assert item["verdict"] == "edited"
-    assert viewer.badge(item) == ("Your edit", "blue", "base was 16,991")
+    # 20,000 is above the high value (16,991), so the badge says so.
+    assert viewer.badge(item) == ("Your edit", "blue",
+                                  "base was 16,991; outside the low to high range")
     customers = report["market_size"]["assumptions"]["customers"]
     assert customers["status_used"] == "assumption"
     assert customers["edited_from"] == 16991
@@ -206,7 +208,7 @@ def test_edited_download_shows_new_numbers_marked_as_edits(real_run, assert_no_e
     text = viewer.brief_markdown(real_run.brief, real_run.report, {"customers": 20000})
     row = next(line for line in text.splitlines() if line.startswith("| Customers |"))
     assert "20,000 (your edit)" in row
-    assert "**[Your edit: base was 16,991]**" in row
+    assert "**[Your edit: base was 16,991; outside the low to high range]**" in row
     assert "[Verified]" not in row
     assert "| Base | $20,000,000 | $6,000,000 | $300,000 |" in text
     assert "1 market-size value was changed in the viewer" in text
@@ -227,3 +229,27 @@ def test_out_of_range():
     assert viewer.out_of_range(assumption, 20000)
     assert viewer.out_of_range(assumption, 100)
     assert not viewer.out_of_range(assumption, 15000)
+
+
+def test_edit_inside_the_range_has_no_range_note(real_run):
+    report = viewer.apply_edits(real_run.brief, real_run.report, {"customers": 15000})
+    assert report["items"]["market_size.customers"]["reasons"] == ["base was 16,991"]
+    text = viewer.brief_markdown(real_run.brief, real_run.report, {"customers": 15000})
+    assert "**[Your edit: base was 16,991]**" in text
+    assert "outside the low to high range" not in text
+
+
+def test_edit_below_the_low_says_so_in_the_download(real_run):
+    text = viewer.brief_markdown(real_run.brief, real_run.report, {"customers": 100})
+    row = next(line for line in text.splitlines() if line.startswith("| Customers |"))
+    assert "**[Your edit: base was 16,991; outside the low to high range]**" in row
+
+
+def test_edited_note_says_it_or_them(real_run):
+    one = viewer.brief_markdown(real_run.brief, real_run.report, {"customers": 15000})
+    assert "1 market-size value was changed in the viewer (marked Your edit). " \
+           "check.py did not check it." in one
+    two = viewer.brief_markdown(real_run.brief, real_run.report,
+                                {"customers": 15000, "price": 99})
+    assert "2 market-size values were changed in the viewer (marked Your edit). " \
+           "check.py did not check them." in two

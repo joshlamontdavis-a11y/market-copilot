@@ -126,8 +126,9 @@ def sizing_note(assumption) -> str:
 
 def edited_note(count) -> str:
     """The summary line about values the user changed in the viewer."""
-    values = "1 market-size value was" if count == 1 else f"{count} market-size values were"
-    return f"{values} changed in the viewer (marked Your edit). check.py did not check them."
+    values, it = ("1 market-size value was", "it") if count == 1 else (
+        f"{count} market-size values were", "them")
+    return f"{values} changed in the viewer (marked Your edit). check.py did not check {it}."
 
 
 def short_quote(quote) -> str:
