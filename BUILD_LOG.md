@@ -335,6 +335,7 @@ Files touched: `backtest/README.md`, `backtest/RESULTS.md`, `tests/test_backtest
 `BUILD_LOG.md`
 
 My decisions and what I learned:
+For the backtest I picked three products that really happened: an infant vital-signs sock, a smart sprinkler controller, and a beehive mite sensor. I described each one without company names and put the customer, geography, and a price guess right in the command, so the brief wouldn’t stop to ask me anything. The decision I’d defend is saying up front that this isn’t a blind test, since web search can find the real companies. I’d rather be honest about what the test can and can’t show than make it look stronger than it is.
 
 ## 2026-10-28: Phase 6b, Backtest results
 
@@ -363,4 +364,4 @@ Files touched: `backtest/runs/` (3 run folders), `backtest/RESULTS.md`,
 `tests/test_backtest.py`, `CLAUDE.md`, `BUILD_LOG.md`
 
 My decisions and what I learned:
-
+The results were more interesting than I expected. The sock brief found the real company and flagged regulation as one of the big risks, including its 2021 sales halt. The sprinkler brief showed a $200 price would sit at the top of the category and that water utility rebates are a hidden competitor. The hive brief found no direct competitor at all. What stood out to me is that in all three, only the customer count actually came from a source, and the other five sizing numbers were guesses, so the market size is a starting point for interviews, not an answer. I also liked that a script copied the numbers into RESULTS.md and a test checks them, so nobody could fudge them, including me.
