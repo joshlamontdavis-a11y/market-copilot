@@ -1,7 +1,7 @@
 """Phase 6 tests: the backtest runs in backtest/runs/ open cleanly in the viewer.
 
-Josh runs each command in backtest/README.md and copies the run folders into backtest/runs/.
-Until a run is copied in, the tests that need runs have nothing to check.
+Josh ran each command in backtest/README.md and copied the run folders into backtest/runs/.
+RESULTS.md must match those runs: its market sizes come from sizing.py (Rule 3), never typed.
 """
 
 import re
@@ -12,6 +12,7 @@ import pytest
 from streamlit.testing.v1 import AppTest
 
 from copilot import viewer
+from copilot.render import whole_money
 
 ROOT = Path(__file__).resolve().parent.parent
 BACKTEST = ROOT / "backtest"
@@ -51,6 +52,35 @@ def test_readme_has_three_commands_that_ask_nothing():
         for part in ("Target customer:", "Geography: United States.", "Price guess: $"):
             assert part in idea, (part, idea)
         assert "--deep" not in idea  # all three run at the default quick depth
+
+
+def test_all_three_cases_have_a_run():
+    assert len(viewer.find_runs(RUNS)) == 3
+
+
+def results_row(run_name) -> str:
+    """The RESULTS.md table row for one run folder."""
+    rows = [line for line in (BACKTEST / "RESULTS.md").read_text(encoding="utf-8").splitlines()
+            if line.startswith("| ") and f"`{run_name}`" in line]
+    assert len(rows) == 1, f"RESULTS.md needs one row for {run_name}"
+    return rows[0]
+
+
+@pytest.mark.parametrize("run_folder", viewer.find_runs(RUNS), ids=lambda path: path.name)
+def test_results_row_matches_the_run(run_folder):
+    run = viewer.load_saved_run(run_folder)
+    row = results_row(run_folder.name)
+    currency = run.brief.get("currency", "USD")
+    base = next(s for s in run.report["market_size"]["scenarios"] if s["name"] == "base")
+    size = " / ".join(whole_money(base[key], currency) for key in ("tam", "sam", "som"))
+    assert f"| {size} |" in row  # the base market size sizing.py computed
+    counts = run.report["counts"]
+    assert (f"| {counts['verified']} verified, {counts['assumption']} assumptions, "
+            f"{counts['unverified']} unverified |") in row
+    for competitor in run.brief["competitors"][:3]:
+        assert competitor["name"] in row
+    for risk in run.brief["riskiest_assumptions"]:
+        assert risk["assumption"] in row
 
 
 @pytest.mark.parametrize("name", ["README.md", "RESULTS.md"])

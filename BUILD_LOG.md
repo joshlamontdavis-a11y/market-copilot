@@ -336,3 +336,31 @@ Files touched: `backtest/README.md`, `backtest/RESULTS.md`, `tests/test_backtest
 
 My decisions and what I learned:
 
+## 2026-10-28: Phase 6b, Backtest results
+
+What changed:
+- Josh ran the three briefs from his second terminal. Copied the run folders into
+  `backtest/runs/`: `2026-10-27-infant-sleep-sock`, `2026-10-27-smart-sprinkler-controller`,
+  and `2026-10-28-varroa-hive-sensor`. All three load in the viewer with no problems: every
+  ledger source passed check.py, 0 items are unverified, and no run has warnings.
+- Filled in `backtest/RESULTS.md` from the runs: the first three competitors with their price
+  and check result, the riskiest assumptions, the base TAM / SAM / SOM, and the check.py
+  counts. A small script copied every value from brief.json and check_report.json, so no
+  number was typed by hand. A new section lists what each base size rests on. In all three
+  runs only the customer count is sourced; the other five inputs are assumptions. The "What
+  actually happened" column is blank for Josh.
+- New tests in `tests/test_backtest.py`: all three cases have a run, and each RESULTS.md row
+  matches its run (base TAM / SAM / SOM from sizing.py, counts, competitor names, riskiest
+  assumptions). Changing one number in RESULTS.md made the test fail, as it should. The
+  "What actually happened" column isn't checked, so filling it in won't break anything.
+- Checked in Chrome with the viewer started the way `/market-copilot:view backtest/runs`
+  starts it, from the repo: the sidebar lists all three runs, each shows every section with
+  badges and no warning, the Base rows match RESULTS.md, and every request went to
+  localhost.
+- Ticked Phase 6 in CLAUDE.md.
+
+Files touched: `backtest/runs/` (3 run folders), `backtest/RESULTS.md`,
+`tests/test_backtest.py`, `CLAUDE.md`, `BUILD_LOG.md`
+
+My decisions and what I learned:
+

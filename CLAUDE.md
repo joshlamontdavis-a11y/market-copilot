@@ -127,6 +127,6 @@ On Windows the command may be `python`; elsewhere `python3`. The skill tries bot
 - [x] 3. Source checker with tests on saved pages, including a fake id and a wrong quote
 - [x] 4. Brief skill, brief schema, check.py, brief.md; one real run saved as a test fixture
 - [x] 5. Viewer with badges, editable assumptions, sources, Markdown export, and the view skill
-- [ ] 6. Backtest on three past Crocker products
+- [x] 6. Backtest on three past Crocker products
 - [ ] 7. README with install steps, sample briefs, public viewer of samples, install test
         from GitHub
