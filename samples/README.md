@@ -17,7 +17,11 @@ so a brief may find the very company it describes.
 
 Prices and competitors change, so each brief is only as current as its research date.
 
-To open all four in the viewer from a copy of this repo:
+See all four in the viewer online, with nothing to install, at
+[market-copilot.streamlit.app](https://market-copilot.streamlit.app). That demo is hosted by
+Streamlit Community Cloud, which collects its own usage statistics under Streamlit's terms.
+
+Or open them in the viewer from a copy of this repo:
 
 ```
 streamlit run app.py -- samples backtest/runs

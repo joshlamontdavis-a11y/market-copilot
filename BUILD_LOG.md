@@ -395,6 +395,19 @@ What changed:
 - Privacy check of every tracked file and the full git history: every commit uses the GitHub
   noreply address; no personal email, API keys, tokens, passwords, local paths, or personal
   test runs.
+- GitHub: Josh created `joshlamontdavis-a11y/market-copilot`, pushed `main`, and made it public.
+- Install test from GitHub, in a fresh folder with a separate Claude Code config and no saved
+  GitHub login, so it got exactly what a stranger gets: `claude plugin marketplace add
+  joshlamontdavis-a11y/market-copilot` and `claude plugin install market-copilot@market-copilot`
+  both succeeded, `claude plugin list` showed market-copilot 0.1.0 enabled, the installed
+  `check.py --version` ran, and the installed sample loaded with no problems. The first try
+  failed only because the test folder's path was too long for Windows; a short path fixed it.
+- Public demo: Josh deployed `demo/streamlit_app.py` on Streamlit Community Cloud at
+  https://market-copilot.streamlit.app. Checked in Chrome: all four samples are listed, and
+  changing Customers to 20,000 on the load-cell brief recomputed the Base row to $20,000,000 /
+  $6,000,000 / $300,000 and showed the range note and "check.py did not check it". Checked
+  signed out with a request carrying no cookies: it passes Streamlit's sign-in check and loads
+  the app. Linked from README.md and samples/README.md.
 - New tests in `tests/test_samples.py` (the sample loads, it matches the fixture, the demo lists
   all four briefs, the local config stays on localhost, README links point to real files), plus
   new viewer tests for the range note and "it" or "them".

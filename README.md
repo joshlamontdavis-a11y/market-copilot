@@ -17,7 +17,8 @@ and Claude Code searches the web, reads the pages, and saves a brief with:
 
 Every competitor, price, and market figure links to the page it came from, with the exact
 quote. An optional viewer shows the brief with colored badges and lets you change the
-market-size numbers.
+market-size numbers. Try it on the sample briefs:
+**[market-copilot.streamlit.app](https://market-copilot.streamlit.app)**.
 
 ![The viewer showing a sample brief](docs/viewer.png)
 
@@ -118,7 +119,8 @@ with your numbers. To open a different folder: `/market-copilot:view <folder>`.
 
 - **[Sample briefs](samples/README.md):** four real runs (a load-cell parts bin, an infant
   vital-signs sock, a smart sprinkler controller, and a beehive mite sensor).
-- **Public demo viewer:** coming soon.
+- **[Public demo viewer](https://market-copilot.streamlit.app):** the four samples in the
+  viewer, nothing to install. Change a market-size number to see TAM, SAM, and SOM update.
 - **[Backtest results](backtest/RESULTS.md):** three of the samples describe past products
   whose outcomes are public, and RESULTS.md compares what each brief found with what really
   happened. **This is not a blind test.** Web search can find the real companies, so a brief
