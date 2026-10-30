@@ -419,3 +419,4 @@ Files touched: `app.py`, `copilot/render.py`, `copilot/viewer.py`, `demo/` (2 fi
 
 My decisions and what I learned:
 
+This phase was about making the tool something other people can actually use. The part I’d point to first is the install test: Claude Code installed the plugin from GitHub with no login, the same way a stranger would, so I know it works for someone who isn’t me. Before going public we checked every file and the whole git history for anything private, and we caught that the description promised “customer segments” that the briefs don’t have, which a reviewer could easily have noticed. I also learned that even “sends nothing anywhere” needed care, since the public demo runs on Streamlit’s servers and they collect their own stats, so the README says that plainly. Seeing all four briefs at a public link where anyone can change the numbers made the whole project feel finished.
